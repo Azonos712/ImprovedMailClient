@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,14 +15,12 @@ using System.Windows.Shapes;
 
 namespace MyMailClient
 {
-    /// <summary>
-    /// Логика взаимодействия для Authorization.xaml
-    /// </summary>
     public partial class Authorization : Window
     {
         public Authorization()
         {
             InitializeComponent();
+            Account.CheckAccPath();
         }
 
         private void Btn_signIn_Click(object sender, RoutedEventArgs e)
@@ -33,7 +32,7 @@ namespace MyMailClient
 
                 MessageBox.Show("Вы успешно авторизировались!", "Уведомление", MessageBoxButton.OK, MessageBoxImage.Information);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
@@ -47,22 +46,44 @@ namespace MyMailClient
             if (txt_pass.Text.Length == 0)
                 throw new Exception("Введите пароль!");
 
-            switch (CheckAccount(txt_login.Text.Trim()))
+            if (Account.CheckAccount(txt_login.Text.Trim()))
             {
-                case 1:
-                    throw new Exception("Такого пользователя не существует!");
-                case 2:
-                    throw new Exception("Такой пользователь уже существует!");
+                if (Account.CheckPassword(txt_login.Text.Trim()))
+                {
+                    Account account = new Account(txt_login.Text.Trim());
+                    Start(account);
+                }
+                else
+                {
+                    throw new Exception("Неправильный пароль!");
+                }
+            }
+            else
+            {
+                throw new Exception("Такого пользователя не существует!");
             }
         }
 
-        int CheckAccount(string login)
+        private void Btn_signUp_Click(object sender, RoutedEventArgs e)
         {
-            int code = 0;
+            try
+            {
+                Validation();
 
 
+                MessageBox.Show("Вы успешно зарегестрировались!", "Уведомление", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
 
-            return code;
+        private void Start(Account profile)
+        {
+            MainWindow mw = new MainWindow(profile);
+            mw.Show();
+            Close();
         }
     }
 }

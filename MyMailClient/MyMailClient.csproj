@@ -55,9 +55,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Account.cs" />
     <Compile Include="Authorization.xaml.cs">
       <DependentUpon>Authorization.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Utility.cs" />
     <Compile Include="WriteLetter.xaml.cs">
       <DependentUpon>WriteLetter.xaml</DependentUpon>
     </Compile>

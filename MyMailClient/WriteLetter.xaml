@@ -17,6 +17,6 @@
 
         <Button x:Name="btn_attach" Content="Прикрепить" HorizontalAlignment="Left" Margin="405,155,0,0" VerticalAlignment="Top" Width="139" Height="23"/>
         <ListBox HorizontalAlignment="Left" Height="100" Margin="405,41,0,0" VerticalAlignment="Top" Width="139"/>
-        <Button x:Name="btn_send" Content="Отправить" HorizontalAlignment="Left" Margin="10,325,0,0" VerticalAlignment="Top" Width="75"/>
+        <Button x:Name="btn_send" Content="Отправить" HorizontalAlignment="Left" Margin="10,325,0,0" VerticalAlignment="Top" Width="75" Click="Btn_send_Click"/>
     </Grid>
 </Window>

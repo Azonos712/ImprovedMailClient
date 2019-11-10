@@ -23,5 +23,10 @@ namespace MyMailClient
         {
             InitializeComponent();
         }
+
+        private void Btn_send_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
