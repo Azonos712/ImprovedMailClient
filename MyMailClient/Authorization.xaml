@@ -4,15 +4,24 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MyMailClient"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="Авторизация" Height="307" Width="389" WindowStartupLocation="CenterScreen">
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="14"
+        x:Name="auth"
+        Title="Авторизация" Height="232" Width="230" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
     <Grid>
-        <Label Content="Логин" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="txt_login" HorizontalAlignment="Left" Height="23" Margin="10,41,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
-        <Label Content="Пароль" HorizontalAlignment="Left" Margin="10,69,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="txt_pass" HorizontalAlignment="Left" Height="23" Margin="10,100,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
-        <Button x:Name="btn_signIn" Content="Вход" HorizontalAlignment="Left" Margin="10,128,0,0" VerticalAlignment="Top" Width="75" Click="Btn_signIn_Click"/>
-        <Button x:Name="btn_signUp" Content="Регистрация" HorizontalAlignment="Left" Margin="10,153,0,0" VerticalAlignment="Top" Width="75" Click="Btn_signUp_Click"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20*"/>
+            <RowDefinition Height="20*"/>
+            <RowDefinition Height="30*"/>
+            <RowDefinition Height="30*"/>
+        </Grid.RowDefinitions>
+
+        <TextBox x:Name="txt_login" Grid.Row="0" materialDesign:HintAssist.Hint="Логин" HorizontalContentAlignment="Center" Width="190" Height="30" TextWrapping="Wrap" VerticalAlignment="Center"/>
+        <TextBox x:Name="txt_pass"  Grid.Row="1" materialDesign:HintAssist.Hint="Пароль" HorizontalContentAlignment="Center" Width="190" Height="30" TextWrapping="Wrap" VerticalAlignment="Center"/>
+        <Button x:Name="btn_signIn" Grid.Row="2" Content="Вход" HorizontalAlignment="Center" VerticalAlignment="Bottom"  Width="190" Click="Btn_signIn_Click"/>
+        <Button x:Name="btn_signUp" Grid.Row="3" Content="Регистрация" HorizontalAlignment="Center" VerticalAlignment="Center" Width="190" Click="Btn_signUp_Click"/>
 
     </Grid>
 </Window>

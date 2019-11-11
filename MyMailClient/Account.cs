@@ -43,7 +43,7 @@ namespace MyMailClient
 
         public static bool CheckPassword(string pass)
         {
-            return false;
+            return true;
         }
 
         string login;

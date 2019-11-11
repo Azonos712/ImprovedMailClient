@@ -30,11 +30,11 @@ namespace MyMailClient
                 Validation();
 
 
-                MessageBox.Show("Вы успешно авторизировались!", "Уведомление", MessageBoxButton.OK, MessageBoxImage.Information);
+                Utility.MsgBox("Вы успешно авторизировались!","Уведомление", auth);
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                Utility.MsgBox(ex.Message, "Ошибка",auth);
             }
         }
 
