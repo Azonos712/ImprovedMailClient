@@ -27,40 +27,60 @@ namespace MyMailClient
         {
             try
             {
-                Validation();
+                Validation(false);
 
 
-                Utility.MsgBox("Вы успешно авторизировались!","Уведомление", auth);
+                Utility.MsgBox("Вы успешно авторизировались!", "Уведомление", auth);
             }
             catch (Exception ex)
             {
-                Utility.MsgBox(ex.Message, "Ошибка",auth);
+                Utility.MsgBox(ex.Message, "Ошибка", auth);
             }
         }
 
-        void Validation()
+        void Validation(bool registration)
         {
             if (txt_login.Text.Trim().Length == 0)
                 throw new Exception("Введите логин!");
 
-            if (txt_pass.Text.Length == 0)
+            if (txt_pass.Password.Length == 0)
                 throw new Exception("Введите пароль!");
 
-            if (Account.CheckAccount(txt_login.Text.Trim()))
+            if (registration)
             {
-                if (Account.CheckPassword(txt_login.Text.Trim()))
+                if (Account.CheckAccount(txt_login.Text.Trim()))
                 {
-                    Account account = new Account(txt_login.Text.Trim());
-                    Start(account);
+                    throw new Exception("Такой пользователь уже есть!");
                 }
                 else
                 {
-                    throw new Exception("Неправильный пароль!");
+                    string tempHash = Utility.ByteArrayToString(Cryptography.GetSHA1(txt_pass.Password.Trim()));
+
+                    using (StreamWriter fs = new StreamWriter(Account.GetAccPath(), true))
+                    {
+                        fs.WriteLine(txt_login.Text.Trim());
+                        fs.WriteLine(tempHash);
+                    }
                 }
             }
             else
             {
-                throw new Exception("Такого пользователя не существует!");
+                if (Account.CheckAccount(txt_login.Text.Trim()))
+                {
+                    if (Account.CheckPassword(txt_login.Text.Trim(), txt_pass.Password.Trim()))
+                    {
+                        Account account = new Account(txt_login.Text.Trim());
+                        Start(account);
+                    }
+                    else
+                    {
+                        throw new Exception("Неправильный пароль!");
+                    }
+                }
+                else
+                {
+                    throw new Exception("Такого пользователя не существует!");
+                }
             }
         }
 
@@ -68,14 +88,14 @@ namespace MyMailClient
         {
             try
             {
-                Validation();
+                Validation(true);
 
 
-                MessageBox.Show("Вы успешно зарегестрировались!", "Уведомление", MessageBoxButton.OK, MessageBoxImage.Information);
+                Utility.MsgBox("Вы успешно зарегестрировались!", "Уведомление", auth);
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                Utility.MsgBox(ex.Message, "Ошибка", auth);
             }
         }
 

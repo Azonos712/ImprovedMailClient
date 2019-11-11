@@ -68,6 +68,7 @@
     <Compile Include="Authorization.xaml.cs">
       <DependentUpon>Authorization.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Cryptography.cs" />
     <Compile Include="MyMsg.xaml.cs">
       <DependentUpon>MyMsg.xaml</DependentUpon>
     </Compile>

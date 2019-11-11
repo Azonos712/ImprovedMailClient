@@ -19,5 +19,10 @@ namespace MyMailClient
             w.Focus();
             sp.Dispose();
         }
+
+        public static string ByteArrayToString(byte[] input)
+        {
+            return System.Convert.ToBase64String(input);
+        }
     }
 }

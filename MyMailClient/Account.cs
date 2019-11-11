@@ -41,9 +41,24 @@ namespace MyMailClient
             return false;
         }
 
-        public static bool CheckPassword(string pass)
+        public static bool CheckPassword(string login, string pass)
         {
-            return true;
+            if (File.Exists(GetAccPath()))
+            {
+                string[] allAcc = File.ReadAllLines(GetAccPath());
+                for (int i = 0; i < allAcc.Length; i += 2)
+                {
+                    if (allAcc[i] == login)
+                    {
+                        if (allAcc[i + 1] == Utility.ByteArrayToString(Cryptography.GetSHA1(pass)))
+                            return true;
+                        else
+                            return false;
+                    }
+                }
+                return false;
+            }
+            return false;
         }
 
         string login;

@@ -18,8 +18,8 @@
             <RowDefinition Height="30*"/>
         </Grid.RowDefinitions>
 
-        <TextBox x:Name="txt_login" Grid.Row="0" materialDesign:HintAssist.Hint="Логин" HorizontalContentAlignment="Center" Width="190" Height="30" TextWrapping="Wrap" VerticalAlignment="Center"/>
-        <TextBox x:Name="txt_pass"  Grid.Row="1" materialDesign:HintAssist.Hint="Пароль" HorizontalContentAlignment="Center" Width="190" Height="30" TextWrapping="Wrap" VerticalAlignment="Center"/>
+        <TextBox x:Name="txt_login" Grid.Row="0" materialDesign:HintAssist.Hint="Логин" HorizontalContentAlignment="Center" Width="190" Height="30" TextWrapping="NoWrap" VerticalAlignment="Center"/>
+        <PasswordBox x:Name="txt_pass"  Grid.Row="1" materialDesign:HintAssist.Hint="Пароль" HorizontalContentAlignment="Center" Width="190" Height="30" VerticalAlignment="Center"/>
         <Button x:Name="btn_signIn" Grid.Row="2" Content="Вход" HorizontalAlignment="Center" VerticalAlignment="Bottom"  Width="190" Click="Btn_signIn_Click"/>
         <Button x:Name="btn_signUp" Grid.Row="3" Content="Регистрация" HorizontalAlignment="Center" VerticalAlignment="Center" Width="190" Click="Btn_signUp_Click"/>
 
