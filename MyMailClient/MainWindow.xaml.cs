@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,6 +26,15 @@ namespace MyMailClient
         {
             InitializeComponent();
             curAcc = new Account(profile);
+
+            UpdateItemsInComboBox(listOfMails, curAcc.MlBxs);
+            //listOfMails.ItemsSource = curAcc.MlBxs;
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void NotifyPropertyChanged(String propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
@@ -32,6 +42,24 @@ namespace MyMailClient
             MailWindow mw = new MailWindow(curAcc);
             mw.ShowDialog();
             this.Focus();
+            curAcc.Srlz();
+            UpdateItemsInComboBox(listOfMails, curAcc.MlBxs);
+            //listOfMails.ItemsSource = curAcc.MlBxs;
+        }
+
+        //TODO:Возможно переделать
+        private void UpdateItemsInComboBox(ComboBox cb, List<MailBox> items)
+        {
+            var selItem = cb.SelectedItem;
+            cb.Items.Clear();
+            foreach (MailBox m in items)
+            {
+                cb.Items.Add(m);
+            }
+            if (selItem != null && cb.Items.Contains(selItem))
+                cb.SelectedItem = selItem;
+
+            CountingBadge.Badge = items.Count;
         }
     }
 }

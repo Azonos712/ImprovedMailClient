@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace MyMailClient
 {
+    [Serializable]
     public class Account
     {
         const string ACC_DIR = "accounts";
@@ -68,16 +69,18 @@ namespace MyMailClient
             return false;
         }
 
-        string login;
-        string hash;
-        //bool useSsl;
+        public string Login { get; set; }
+        public string Hash { get; set; }
 
-        List<MailBox> MlBxs;//ObservableCollection<Mailbox> mailboxes;
+        //bool useSsl;
+        internal List<MailBox> MlBxs;
+        //ObservableCollection<Mailbox> mailboxes;
+
         //ObservableCollection<CryptoKey> keys;
         public Account(string l, string h)
         {
-            this.login = l;
-            this.hash = h;
+            this.Login = l;
+            this.Hash = h;
 
             //this.useSsl = true;
             this.MlBxs = new List<MailBox>();
@@ -86,8 +89,8 @@ namespace MyMailClient
 
         public Account(Account acc)
         {
-            this.login = acc.login;
-            this.hash = acc.hash;
+            this.Login = acc.Login;
+            this.Hash = acc.Hash;
 
             //this.useSsl = true;
             this.MlBxs = new List<MailBox>(acc.MlBxs);
@@ -104,10 +107,20 @@ namespace MyMailClient
             return false;
         }
 
+        public bool ContainMailAddress(string newName)
+        {
+            foreach (MailBox m in MlBxs)
+            {
+                if (m.Address == newName)
+                    return true;
+            }
+            return false;
+        }
+
         public void Srlz()
         {
-            Directory.CreateDirectory(Account.ACC_DIR + "\\" + login);
-            using (FileStream fstream = File.Open(Account.GetAccInfoPath(login), FileMode.Create))
+            Directory.CreateDirectory(Account.ACC_DIR + "\\" + Login);
+            using (FileStream fstream = File.Open(Account.GetAccInfoPath(Login), FileMode.Create))
             {
                 BinaryFormatter bf = new BinaryFormatter();
                 bf.Serialize(fstream, this);

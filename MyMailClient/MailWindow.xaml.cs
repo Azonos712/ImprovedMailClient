@@ -32,9 +32,16 @@ namespace MyMailClient
             {
                 Validation();
 
+                int sm = int.Parse(txt_smtp.Text.Trim());
+                int im = int.Parse(txt_imap.Text.Trim());
 
+                MailBox m = new MailBox(txt_name.Text.Trim(), txt_address.Text.Trim(), txt_pass.Password, sm, im);
+
+                tempAcc.MlBxs.Add(m);
 
                 Utility.MsgBox("Вы успешно добавили новый почтовый ящик!", "Уведомление", mailWin);
+
+                this.Close();
             }
             catch (Exception ex)
             {
@@ -61,11 +68,23 @@ namespace MyMailClient
             if (tempAcc.ContainMailName(txt_name.Text.Trim()))
                 throw new Exception("Такое название уже используется!");
 
+            if (txt_address.Text.Trim().Length == 0)
+                throw new Exception("Введите адресс почтового клиента!");
+
+            if (!Utility.ValidateEmail(txt_address.Text.Trim()))
+                throw new Exception("Введён некорректный адрес!");
+
+            if (tempAcc.ContainMailAddress(txt_address.Text.Trim()))
+                throw new Exception("Такой адрес уже используется!");
 
             if (txt_pass.Password.Length == 0)
                 throw new Exception("Введите пароль!");
 
-            throw new NotImplementedException();
+            if (txt_smtp.Text.Trim().Length == 0)
+                throw new Exception("Введите порт SMTP!");
+
+            if (txt_imap.Text.Trim().Length == 0)
+                throw new Exception("Введите порт IMAP!");
         }
     }
 }

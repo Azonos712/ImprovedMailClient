@@ -18,8 +18,12 @@
             <RowDefinition Height="30*"/>
         </Grid.RowDefinitions>
 
+        <materialDesign:PackIcon Height="30" Width="30" Grid.Row="0" Kind="AccountTie" Foreground="{Binding ElementName=txt_login, Path=BorderBrush}" VerticalAlignment="Center" Margin="15 0 0 0"/>
+        <materialDesign:PackIcon Height="30" Width="30" Grid.Row="1" Kind="VpnKey" Foreground="{Binding ElementName=txt_pass, Path=BorderBrush}" VerticalAlignment="Center" Margin="15 0 0 0"/>
+
         <TextBox x:Name="txt_login" Grid.Row="0" materialDesign:HintAssist.Hint="Логин" HorizontalContentAlignment="Center" Width="190" Height="30" TextWrapping="NoWrap" VerticalAlignment="Center"/>
-        <PasswordBox x:Name="txt_pass"  Grid.Row="1" materialDesign:HintAssist.Hint="Пароль" HorizontalContentAlignment="Center" Width="190" Height="30" VerticalAlignment="Center"/>
+        <PasswordBox x:Name="txt_pass" Grid.Row="1" materialDesign:HintAssist.Hint="Пароль" HorizontalContentAlignment="Center" Width="190" Height="30" VerticalAlignment="Center"/>
+
         <Button x:Name="btn_signIn" Grid.Row="2" Content="Вход" HorizontalAlignment="Center" VerticalAlignment="Bottom"  Width="190" Click="Btn_signIn_Click"/>
         <Button x:Name="btn_signUp" Grid.Row="3" Content="Регистрация" HorizontalAlignment="Center" VerticalAlignment="Center" Width="190" Click="Btn_signUp_Click"/>
 
