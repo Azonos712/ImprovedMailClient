@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,6 +12,7 @@ namespace MyMailClient
     {
         const string ACC_DIR = "accounts";
         const string ACC_FILE = "all.acc";
+        const string INF_FILE = "acc.inf";
 
         public static void CheckAccPath()
         {
@@ -24,6 +26,11 @@ namespace MyMailClient
         public static string GetAccPath()
         {
             return ACC_DIR + "\\" + ACC_FILE;
+        }
+
+        public static string GetAccInfoPath(string l)
+        {
+            return ACC_DIR + "\\" + l + "\\" + INF_FILE;
         }
 
         public static bool CheckAccount(string login)
@@ -62,19 +69,59 @@ namespace MyMailClient
         }
 
         string login;
-        //internal string digest;
+        string hash;
         //bool useSsl;
 
-        //ObservableCollection<Mailbox> mailboxes;
+        List<MailBox> MlBxs;//ObservableCollection<Mailbox> mailboxes;
         //ObservableCollection<CryptoKey> keys;
-        public Account(string login)
+        public Account(string l, string h)
         {
-            this.login = login;
-            //this.digest = digest;
+            this.login = l;
+            this.hash = h;
 
             //this.useSsl = true;
-            //this.mailboxes = new ObservableCollection<Mailbox>();
+            this.MlBxs = new List<MailBox>();
             //this.keys = new ObservableCollection<CryptoKey>();
+        }
+
+        public Account(Account acc)
+        {
+            this.login = acc.login;
+            this.hash = acc.hash;
+
+            //this.useSsl = true;
+            this.MlBxs = new List<MailBox>(acc.MlBxs);
+            //this.keys = new ObservableCollection<CryptoKey>();
+        }
+
+        public bool ContainMailName(string newName)
+        {
+            foreach (MailBox m in MlBxs)
+            {
+                if (m.Name == newName)
+                    return true;
+            }
+            return false;
+        }
+
+        public void Srlz()
+        {
+            Directory.CreateDirectory(Account.ACC_DIR + "\\" + login);
+            using (FileStream fstream = File.Open(Account.GetAccInfoPath(login), FileMode.Create))
+            {
+                BinaryFormatter bf = new BinaryFormatter();
+                bf.Serialize(fstream, this);
+            }
+        }
+        public static Account Dsrlz(string l)
+        {
+            Account acc = null;
+            using (FileStream fstream = File.Open(Account.GetAccInfoPath(l), FileMode.Open))
+            {
+                BinaryFormatter binaryFormatter = new BinaryFormatter();
+                acc = binaryFormatter.Deserialize(fstream) as Account;
+            }
+            return acc;
         }
     }
 }

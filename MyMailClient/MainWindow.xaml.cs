@@ -20,14 +20,18 @@ namespace MyMailClient
     /// </summary>
     public partial class MainWindow : Window
     {
+        Account curAcc;
         public MainWindow(Account profile)
         {
             InitializeComponent();
+            curAcc = new Account(profile);
         }
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
-
+            MailWindow mw = new MailWindow(curAcc);
+            mw.ShowDialog();
+            this.Focus();
         }
     }
 }

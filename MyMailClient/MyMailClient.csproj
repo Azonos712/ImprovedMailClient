@@ -69,6 +69,10 @@
       <DependentUpon>Authorization.xaml</DependentUpon>
     </Compile>
     <Compile Include="Cryptography.cs" />
+    <Compile Include="MailBox.cs" />
+    <Compile Include="MailWindow.xaml.cs">
+      <DependentUpon>MailWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MyMsg.xaml.cs">
       <DependentUpon>MyMsg.xaml</DependentUpon>
     </Compile>
@@ -77,6 +81,10 @@
       <DependentUpon>WriteLetter.xaml</DependentUpon>
     </Compile>
     <Page Include="Authorization.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MailWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

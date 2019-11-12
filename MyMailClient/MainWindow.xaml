@@ -23,6 +23,7 @@
         <Menu Grid.ColumnSpan="2" Grid.Column="0" Grid.Row="0" BorderBrush="Blue" BorderThickness="1" HorizontalAlignment="Left" VerticalAlignment="Top" Width="800" Height="30" Margin="0,0,-6,0">
             <MenuItem Header="Управление ящиками" Height="30">
                 <MenuItem Height="30" Header="Добавить почтовый ящик" Click="MenuItem_Click"></MenuItem>
+                <MenuItem Height="30" Header="Изменить выбранный почтовый ящик"></MenuItem>
                 <MenuItem Height="30" Header="Удалить выбранный почтовый ящик"></MenuItem>
             </MenuItem>
             <MenuItem Header="Настройки" Height="30"></MenuItem>

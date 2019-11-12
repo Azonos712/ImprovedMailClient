@@ -55,6 +55,9 @@ namespace MyMailClient
                 {
                     string tempHash = Utility.ByteArrayToString(Cryptography.GetSHA1(txt_pass.Password.Trim()));
 
+                    Account account = new Account(txt_login.Text.Trim(), tempHash);
+                    account.Srlz();
+
                     using (StreamWriter fs = new StreamWriter(Account.GetAccPath(), true))
                     {
                         fs.WriteLine(txt_login.Text.Trim());
@@ -68,7 +71,8 @@ namespace MyMailClient
                 {
                     if (Account.CheckPassword(txt_login.Text.Trim(), txt_pass.Password.Trim()))
                     {
-                        Account account = new Account(txt_login.Text.Trim());
+                        Account account = new Account(Account.Dsrlz(txt_login.Text.Trim()));
+                        
                         Start(account);
                     }
                     else
