@@ -29,7 +29,6 @@ namespace MyMailClient
             {
                 Validation(false);
 
-
                 Utility.MsgBox("Вы успешно авторизировались!", "Уведомление", auth);
             }
             catch (Exception ex)
@@ -89,7 +88,6 @@ namespace MyMailClient
             try
             {
                 Validation(true);
-
 
                 Utility.MsgBox("Вы успешно зарегестрировались!", "Уведомление", auth);
             }

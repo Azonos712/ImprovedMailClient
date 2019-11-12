@@ -9,7 +9,6 @@ namespace MyMailClient
 {
     static class Cryptography
     {
-
         public static readonly Encoding Enc = Encoding.UTF8;
         public static byte[] GetSHA1(byte[] data)
         {

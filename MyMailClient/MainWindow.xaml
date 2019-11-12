@@ -5,8 +5,38 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MyMailClient"
         mc:Ignorable="d"
-        Title="Мой почтовый клиент" Height="450" Width="800">
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="14"
+        Title="Мой почтовый клиент" Height="460" Width="800" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="7*"/>
+            <RowDefinition Height="7*"/>
+            <RowDefinition Height="10*"/>
+            <RowDefinition Height="76*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="30*"/>
+            <ColumnDefinition Width="70*"/>
+        </Grid.ColumnDefinitions>
+
+        <Menu Grid.ColumnSpan="2" Grid.Column="0" Grid.Row="0" BorderBrush="Blue" BorderThickness="1" HorizontalAlignment="Left" VerticalAlignment="Top" Width="800" Height="30" Margin="0,0,-6,0">
+            <MenuItem Header="Управление ящиками" Height="30">
+                <MenuItem Height="30" Header="Добавить почтовый ящик" Click="MenuItem_Click"></MenuItem>
+                <MenuItem Height="30" Header="Удалить выбранный почтовый ящик"></MenuItem>
+            </MenuItem>
+            <MenuItem Header="Настройки" Height="30"></MenuItem>
+            <MenuItem Header="Помощь" Height="30"></MenuItem>
+        </Menu>
+        <Label Grid.Column="0" Grid.Row="1" Content="Текущий почтовый ящик" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+        <ComboBox Grid.Column="0" Grid.Row="2" HorizontalAlignment="Center"  VerticalAlignment="Center" Width="210"/>
+
+        <TreeView Grid.Column="0" Grid.Row="3" BorderBrush="Blue" BorderThickness="1" HorizontalAlignment="Center" Height="300" VerticalAlignment="Center" Width="210"/>
+
+        <Border Grid.Column="1" Grid.Row="1" Grid.RowSpan="3" BorderBrush="Blue" BorderThickness="0.9"  Height="370" Width="510" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <WebBrowser Height="360" Width="500"  HorizontalAlignment="Center" VerticalAlignment="Center"></WebBrowser>
+        </Border>
+
     </Grid>
 </Window>
