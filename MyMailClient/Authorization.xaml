@@ -9,7 +9,29 @@
         TextElement.FontWeight="Regular"
         TextElement.FontSize="14"
         x:Name="auth"
-        Title="Авторизация" Height="232" Width="230" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+        Opacity="1"
+        Title="Авторизация" Height="232" Style="{StaticResource MyWindowStyle}" Width="420" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+    <Window.Resources>
+        <Style x:Key="MyWindowStyle" TargetType="Window">
+            <Style.Triggers>
+                <EventTrigger RoutedEvent="Loaded">
+                    <!--Триггер при открытие окна-->
+                    <EventTrigger.Actions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation
+                                Storyboard.TargetProperty="Opacity"
+                                From="0.4"
+                                To="1"
+                                Duration="0:0:0.35" />
+                                <!--Duration менять время анимации, From (от значения) To (до значения)-->
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger.Actions>
+                </EventTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="20*"/>
@@ -21,11 +43,15 @@
         <materialDesign:PackIcon Height="30" Width="30" Grid.Row="0" Kind="AccountTie" Foreground="{Binding ElementName=txt_login, Path=BorderBrush}" VerticalAlignment="Center" Margin="15 0 0 0"/>
         <materialDesign:PackIcon Height="30" Width="30" Grid.Row="1" Kind="VpnKey" Foreground="{Binding ElementName=txt_pass, Path=BorderBrush}" VerticalAlignment="Center" Margin="15 0 0 0"/>
 
-        <TextBox x:Name="txt_login" Grid.Row="0" materialDesign:HintAssist.Hint="Логин" HorizontalContentAlignment="Center" Width="190" Height="30" TextWrapping="NoWrap" VerticalAlignment="Center"/>
-        <PasswordBox x:Name="txt_pass" Grid.Row="1" materialDesign:HintAssist.Hint="Пароль" HorizontalContentAlignment="Center" Width="190" Height="30" VerticalAlignment="Center"/>
+        <TextBox x:Name="txt_login" Grid.Row="0" materialDesign:HintAssist.Hint="Логин" HorizontalAlignment="Left" HorizontalContentAlignment="Center" Width="190" Height="30" TextWrapping="NoWrap" VerticalAlignment="Center" Margin="20 0 0 0"/>
+        <PasswordBox x:Name="txt_pass" Grid.Row="1" materialDesign:HintAssist.Hint="Пароль" HorizontalAlignment="Left" HorizontalContentAlignment="Center" Width="190" Height="30" VerticalAlignment="Center" Margin="20 0 0 0"/>
 
-        <Button x:Name="btn_signIn" Grid.Row="2" Content="Вход" HorizontalAlignment="Center" VerticalAlignment="Bottom"  Width="190" Click="Btn_signIn_Click"/>
-        <Button x:Name="btn_signUp" Grid.Row="3" Content="Регистрация" HorizontalAlignment="Center" VerticalAlignment="Center" Width="190" Click="Btn_signUp_Click"/>
+        <Button x:Name="btn_signIn" Grid.Row="2" Content="Вход" HorizontalAlignment="Left" VerticalAlignment="Bottom"  Width="190" Click="Btn_signIn_Click" Margin="20 0 0 0"/>
+        <Button x:Name="btn_signUp" Grid.Row="3" Content="Регистрация" HorizontalAlignment="Left" VerticalAlignment="Center" Width="190" Click="Btn_signUp_Click" Margin="20 0 0 0"/>
 
+        <Image Grid.Row="0" Grid.RowSpan="4" Source="Resources\logo.png" HorizontalAlignment="Right" Height="200" Width="200"></Image>
     </Grid>
 </Window>
+    
+    
+    
