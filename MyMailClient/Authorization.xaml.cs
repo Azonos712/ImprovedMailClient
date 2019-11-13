@@ -108,5 +108,10 @@ namespace MyMailClient
             mw.Show();
             Close();
         }
+
+        private void btn_exit_Click(object sender, RoutedEventArgs e)
+        {
+            Environment.Exit(0);
+        }
     }
 }
