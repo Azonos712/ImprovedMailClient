@@ -32,7 +32,6 @@ namespace MyMailClient
             try
             {   
                 MailAddress m = new MailAddress(s);
-
                 return true;
             }
             catch (FormatException)

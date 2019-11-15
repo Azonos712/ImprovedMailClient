@@ -22,6 +22,7 @@ namespace MyMailClient
     public partial class MainWindow : Window
     {
         Account curAcc;
+        MailBox curMail;
         public MainWindow(Account profile)
         {
             InitializeComponent();

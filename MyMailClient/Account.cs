@@ -92,6 +92,10 @@ namespace MyMailClient
 
         public Account(Account acc)
         {
+            if(acc==null)
+                throw new Exception("Аккаунта нет!");
+
+
             this.Login = acc.Login;
             this.Hash = acc.Hash;
 

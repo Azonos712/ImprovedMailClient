@@ -32,6 +32,8 @@ namespace MyMailClient
             da.Completed += WinAnimation_Completed;
             auth.BeginAnimation(Window.OpacityProperty, da);
         }
+
+        #region start animation
         private void WinAnimation_Completed(object sender, EventArgs e)
         {
             DoubleAnimation daImgOpacity = new DoubleAnimation(1, 0, TimeSpan.FromSeconds(2));
@@ -79,6 +81,7 @@ namespace MyMailClient
             DoubleAnimation daOpacity7 = new DoubleAnimation(0, 1, TimeSpan.FromSeconds(0.5));
             btn_exit.BeginAnimation(Button.OpacityProperty, daOpacity7);
         }
+        #endregion
 
         void zeroOpacitySettings()
         {

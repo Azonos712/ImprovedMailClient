@@ -32,7 +32,6 @@
         <Button x:Name="btn_signUp" Grid.Row="4" Content="Регистрация" HorizontalAlignment="Center" VerticalAlignment="Top" Width="190" Click="Btn_signUp_Click"/>
         <Button x:Name="btn_exit" Grid.Row="5" Content="Выход" HorizontalAlignment="Center" VerticalAlignment="Top" Width="190" Click="btn_exit_Click"/>
 
-
         <Image x:Name="img_mail" Grid.Row="0" Grid.RowSpan="6" Source="Resources\logo.png" HorizontalAlignment="Center" Height="250" Width="250"></Image>
     </Grid>
 </Window>

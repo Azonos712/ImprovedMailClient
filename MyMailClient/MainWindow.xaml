@@ -30,6 +30,13 @@
                 <MenuItem Height="30" Header="Изменить выбранный почтовый ящик"></MenuItem>
                 <MenuItem Height="30" Header="Удалить выбранный почтовый ящик"></MenuItem>
             </MenuItem>
+            <MenuItem Header="Письма" Height="30">
+                <MenuItem Height="30" Header="Написать письмо"></MenuItem>
+            </MenuItem>
+            <MenuItem Header="Менеджер криптографии" Height="30">
+                <MenuItem Height="30" Header="Зашифровать/расшифровать сообщение"></MenuItem>
+                <MenuItem Height="30" Header="Подписать/верифицировать сообщение"></MenuItem>
+            </MenuItem>
             <MenuItem Header="Настройки" Height="30"></MenuItem>
             <MenuItem Header="Помощь" Height="30"></MenuItem>
         </Menu>
