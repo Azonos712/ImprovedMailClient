@@ -42,11 +42,11 @@ namespace MyMailClient
         {
             //TODO:удаление элемента
             img_mail.Margin = new Thickness(251, 0, 0, 0);
-            DoubleAnimation daOpacity1 = new DoubleAnimation(0, 1, TimeSpan.FromSeconds(0.6));
-            DoubleAnimation daOpacity3 = new DoubleAnimation(0, 1, TimeSpan.FromSeconds(0.6));
+            DoubleAnimation daOpacity1 = new DoubleAnimation(0, 1, TimeSpan.FromSeconds(0.8));
+            DoubleAnimation daOpacity3 = new DoubleAnimation(0, 1, TimeSpan.FromSeconds(0.8));
 
-            DoubleAnimation daOpacity2 = new DoubleAnimation(0, 1, TimeSpan.FromSeconds(1));
-            DoubleAnimation daOpacity4 = new DoubleAnimation(0, 1, TimeSpan.FromSeconds(1));
+            DoubleAnimation daOpacity2 = new DoubleAnimation(0, 1, TimeSpan.FromSeconds(1.2));
+            DoubleAnimation daOpacity4 = new DoubleAnimation(0, 1, TimeSpan.FromSeconds(1.2));
             daOpacity4.Completed += DaOpacity4_Completed;
 
             //daOpacity1.Completed += DaOpacity1_Completed;
