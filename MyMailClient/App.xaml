@@ -7,7 +7,7 @@
     <Application.Resources>
         <ResourceDictionary>
 
-            <Style x:Key="MyOpacity" TargetType="Window">
+            <Style x:Key="MyOpacityWindow" TargetType="Window">
                 <Style.Triggers>
                     <EventTrigger RoutedEvent="Loaded">
                         <!--Триггер при открытие окна-->
@@ -26,7 +26,7 @@
                     </EventTrigger>
                 </Style.Triggers>
             </Style>
-            
+
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />

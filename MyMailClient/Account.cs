@@ -15,6 +15,9 @@ namespace MyMailClient
         const string ACC_FILE = "all.acc";
         const string INF_FILE = "acc.inf";
 
+        /// <summary>
+        /// Проверка существования директории и файла для списка всех аккаунтов
+        /// </summary>
         public static void CheckAccPath()
         {
             if (!Directory.Exists(ACC_DIR))
