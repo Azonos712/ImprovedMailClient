@@ -27,8 +27,8 @@
             </MenuItem>
             <MenuItem Header="Управление ящиками" Height="30">
                 <MenuItem Height="30" Header="Добавить почтовый ящик" Click="MenuItem_Click"></MenuItem>
-                <MenuItem Height="30" Header="Изменить выбранный почтовый ящик"></MenuItem>
-                <MenuItem Height="30" Header="Удалить выбранный почтовый ящик"></MenuItem>
+                <MenuItem Height="30" Header="Изменить выбранный почтовый ящик" Click="MenuItem_Click_3"></MenuItem>
+                <MenuItem Height="30" Header="Удалить выбранный почтовый ящик" Click="MenuItem_Click_4"></MenuItem>
             </MenuItem>
             <MenuItem Header="Письма" Height="30">
                 <MenuItem Height="30" Header="Написать письмо"></MenuItem>
@@ -41,10 +41,10 @@
             <MenuItem Header="Помощь" Height="30"></MenuItem>
         </Menu>
         <materialDesign:Badged x:Name="CountingBadge" Grid.Column="0" Grid.Row="1" Badge="3" HorizontalAlignment="Center"  VerticalAlignment="Center">
-            <ComboBox x:Name="listOfMails" Grid.Column="0" Grid.Row="1" materialDesign:HintAssist.Hint="Текущий почтовый ящик" Style="{StaticResource MaterialDesignFloatingHintComboBox}" HorizontalAlignment="Center"  VerticalAlignment="Center" Width="210"/>
+            <ComboBox x:Name="listOfMails" Grid.Column="0" Grid.Row="1" materialDesign:HintAssist.Hint="Текущий почтовый ящик" Style="{StaticResource MaterialDesignFloatingHintComboBox}" HorizontalAlignment="Center"  VerticalAlignment="Center" Width="210" SelectionChanged="listOfMails_SelectionChanged"/>
         </materialDesign:Badged>
 
-        <TreeView Grid.Column="0" Grid.Row="2" BorderBrush="Blue" BorderThickness="1" HorizontalAlignment="Center" Height="285" VerticalAlignment="Center" Width="210"/>
+        <TreeView x:Name="listOfLetters" materialDesign:HintAssist.Hint="Приветики" Grid.Column="0" Grid.Row="2" BorderBrush="Blue" BorderThickness="1" HorizontalAlignment="Center" Height="285" VerticalAlignment="Center" Width="210"/>
 
         <Border Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" BorderBrush="Blue" BorderThickness="0.9"  Height="370" Width="510" HorizontalAlignment="Center" VerticalAlignment="Center">
             <WebBrowser Height="360" Width="500"  HorizontalAlignment="Center" VerticalAlignment="Center"></WebBrowser>

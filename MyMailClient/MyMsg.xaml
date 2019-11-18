@@ -8,13 +8,13 @@
         TextElement.FontWeight="Regular"
         TextElement.FontSize="14"
         x:Name="MSB"
-        Title="Title" Height="200" Width="250" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+        Title="Title" Height="250" Width="350" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="60*"/>
-            <RowDefinition Height="40*"/>
+            <RowDefinition Height="70*"/>
+            <RowDefinition Height="30*"/>
         </Grid.RowDefinitions>
-        <TextBlock x:Name="txt_info" IsEnabled="False" Text="Label" TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" Grid.Row="0" Width="220"/>
+        <TextBlock x:Name="txt_info" IsEnabled="False" Text="Label" TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" Grid.Row="0" Width="330"/>
         <Button Content="ОК" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Grid.Row="1" Click="Button_Click"/>
 
     </Grid>

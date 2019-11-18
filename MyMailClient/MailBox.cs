@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace MyMailClient
 {
     [Serializable]
-    class MailBox
+    public class MailBox
     {
         public const string DEFAULT_SMTP_SUBDOMAIN = "smtp.";
         public const string DEFAULT_SMTP_PORT = "587";
@@ -50,5 +50,6 @@ namespace MyMailClient
         //    this.IMAP_Dom = d;
         //    this.IMAP_Port = p;
         //}
+
     }
 }

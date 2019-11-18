@@ -20,27 +20,44 @@ namespace MyMailClient
     public partial class MailWindow : Window
     {
         Account tempAcc;
-        public MailWindow(Account profile)
+        MailBox tempBox;
+
+        public MailWindow(Account profile, MailBox mailbox = null)
         {
             InitializeComponent();
             tempAcc = profile;
+
+            if (mailbox != null)
+            {
+                tempBox = mailbox;
+                txt_name.Text = mailbox.Name;
+                txt_address.Text = mailbox.Address;
+                txt_pass.Password = mailbox.Pass;
+                txt_smtp.Text = mailbox.SMTP_Port.ToString();
+                txt_imap.Text = mailbox.IMAP_Port.ToString();
+            }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             try
             {
+                if (tempBox != null) { 
+                    tempAcc.MlBxs.Remove(tempBox);
+                    tempBox = null;
+                }
+
                 Validation();
 
                 int sm = int.Parse(txt_smtp.Text.Trim());
                 int im = int.Parse(txt_imap.Text.Trim());
 
+
                 MailBox m = new MailBox(txt_name.Text.Trim(), txt_address.Text.Trim(), txt_pass.Password, sm, im);
-
                 tempAcc.MlBxs.Add(m);
+                Utility.MsgBox("Изминения успешно внесены!", "Уведомление", mailWin);
 
-                Utility.MsgBox("Вы успешно добавили новый почтовый ящик!", "Уведомление", mailWin);
-
+                this.DialogResult = true;
                 this.Close();
             }
             catch (Exception ex)
