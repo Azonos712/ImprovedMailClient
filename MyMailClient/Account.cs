@@ -8,7 +8,7 @@ namespace MyMailClient
     [Serializable]
     public class Account
     {
-        const string ACC_DIR = "accounts";
+        public const string ACC_DIR = "accounts";
         const string ACC_FILE = "all.acc";
         const string INF_FILE = "acc.inf";
 
