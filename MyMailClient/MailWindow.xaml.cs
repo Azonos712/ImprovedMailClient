@@ -19,22 +19,18 @@ namespace MyMailClient
     /// </summary>
     public partial class MailWindow : Window
     {
-        Account tempAcc;
-        MailBox tempBox;
-
-        public MailWindow(Account profile, MailBox mailbox = null)
+        bool add;
+        public MailWindow(bool temp)
         {
             InitializeComponent();
-            tempAcc = profile;
-
-            if (mailbox != null)
+            add = temp;
+            if (add == false)
             {
-                tempBox = mailbox;
-                txt_name.Text = mailbox.Name;
-                txt_address.Text = mailbox.Address;
-                txt_pass.Password = mailbox.Pass;
-                txt_smtp.Text = mailbox.SMTP_Port.ToString();
-                txt_imap.Text = mailbox.IMAP_Port.ToString();
+                txt_name.Text = CurrentData.curMail.Name;
+                txt_address.Text = CurrentData.curMail.Address;
+                txt_pass.Password = CurrentData.curMail.Pass;
+                txt_smtp.Text = CurrentData.curMail.SMTP_Port.ToString();
+                txt_imap.Text = CurrentData.curMail.IMAP_Port.ToString();
             }
         }
 
@@ -42,20 +38,20 @@ namespace MyMailClient
         {
             try
             {
-                if (tempBox != null) { 
-                    tempAcc.MlBxs.Remove(tempBox);
-                    tempBox = null;
-                }
+                //if (tempBox != null) { 
+                //    tempAcc.MlBxs.Remove(tempBox);
+                //    tempBox = null;
+                //}
 
                 Validation();
 
-                int sm = int.Parse(txt_smtp.Text.Trim());
-                int im = int.Parse(txt_imap.Text.Trim());
+                if (add == false)
+                    CurrentData.curAcc.MlBxs.Remove(CurrentData.curMail);
 
-
-                MailBox m = new MailBox(txt_name.Text.Trim(), txt_address.Text.Trim(), txt_pass.Password, sm, im);
-                tempAcc.MlBxs.Add(m);
-                Utility.MsgBox("Изминения успешно внесены!", "Уведомление", mailWin);
+                MailBox m = new MailBox(txt_name.Text.Trim(), txt_address.Text.Trim(), txt_pass.Password, int.Parse(txt_smtp.Text.Trim()), int.Parse(txt_imap.Text.Trim()));
+                CurrentData.curAcc.MlBxs.Add(m);
+                //tempAcc.MlBxs.Add(m);
+                Utility.MsgBox("Готово!", "Уведомление", mailWin);
 
                 this.DialogResult = true;
                 this.Close();
@@ -82,7 +78,8 @@ namespace MyMailClient
             if (txt_name.Text.Trim().Length == 0)
                 throw new Exception("Введите название!");
 
-            if (tempAcc.ContainMailName(txt_name.Text.Trim()))
+            var temp1 = CurrentData.curMail != null ? CurrentData.curMail.Name : String.Empty;
+            if (CurrentData.curAcc.ContainMailName(txt_name.Text.Trim(), temp1))
                 throw new Exception("Такое название уже используется!");
 
             if (txt_address.Text.Trim().Length == 0)
@@ -91,7 +88,8 @@ namespace MyMailClient
             if (!Utility.ValidateEmail(txt_address.Text.Trim()))
                 throw new Exception("Введён некорректный адрес!");
 
-            if (tempAcc.ContainMailAddress(txt_address.Text.Trim()))
+            var temp2 = CurrentData.curMail != null ? CurrentData.curMail.Address : String.Empty;
+            if (CurrentData.curAcc.ContainMailAddress(txt_address.Text.Trim(), temp2))
                 throw new Exception("Такой адрес уже используется!");
 
             if (txt_pass.Password.Length == 0)

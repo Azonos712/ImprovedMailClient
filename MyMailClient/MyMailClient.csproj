@@ -86,6 +86,7 @@
       <DependentUpon>Authorization.xaml</DependentUpon>
     </Compile>
     <Compile Include="Cryptography.cs" />
+    <Compile Include="CurrentData.cs" />
     <Compile Include="MailBox.cs" />
     <Compile Include="MailWindow.xaml.cs">
       <DependentUpon>MailWindow.xaml</DependentUpon>

@@ -101,26 +101,30 @@ namespace MyMailClient
             //this.keys = new ObservableCollection<CryptoKey>();
         }
 
-        public bool ContainMailName(string newName)
+        public bool ContainMailName(string newName, string exceptName)
         {
             foreach (MailBox m in MlBxs)
             {
+                if (m.Name == exceptName)
+                    continue;
+
                 if (m.Name == newName)
                     return true;
             }
             return false;
         }
-
-        public bool ContainMailAddress(string newName)
+        public bool ContainMailAddress(string newAddress, string exceptAddres)
         {
             foreach (MailBox m in MlBxs)
             {
-                if (m.Address == newName)
+                if (m.Address == exceptAddres)
+                    continue;
+
+                if (m.Address == newAddress)
                     return true;
             }
             return false;
         }
-
         public void Srlz()
         {
             Directory.CreateDirectory(Account.ACC_DIR + "\\" + Login);

@@ -25,28 +25,49 @@ namespace MyMailClient
     /// </summary>
     public partial class MainWindow : Window
     {
-        Account curAcc;
-        MailBox curMail;
-        ImapClient imap;
-        private static DataTemplate letterDT;
-        public MainWindow(Account profile)
+        //Account curAcc;
+        //MailBox curMail;
+        //ImapClient imap;
+
+        //private static DataTemplate letterDT;
+        bool noConnection = false;
+        public MainWindow()
         {
             InitializeComponent();
-            curAcc = new Account(profile);
 
-            UpdateItemsInComboBox(listOfMails, curAcc.MlBxs);
+            UpdateItemsInComboBox(listOfMails, CurrentData.curAcc.MlBxs);
             //listOfMails.ItemsSource = curAcc.MlBxs;
         }
+
+        //TODO:Возможно переделать
+        private void UpdateItemsInComboBox(ComboBox cb, List<MailBox> items)
+        {
+            //var selItem = update == true ? items[items.Count - 1] : cb.SelectedItem;
+            //var selItem = cb.SelectedItem;
+
+            cb.Items.Clear();
+            foreach (MailBox m in items)
+            {
+                cb.Items.Add(m);
+            }
+            if (CurrentData.curMail != null)
+                cb.SelectedItem = CurrentData.curMail;
+
+            CountingBadge.Badge = items.Count;
+        }
+
         /// <summary>
         /// Добавить новый почтовый ящик
         /// </summary>
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            MailWindow mw = new MailWindow(curAcc);
+            MailWindow mw = new MailWindow(true);
             if (mw.ShowDialog() == true)
             {
-                curAcc.Srlz();
-                UpdateItemsInComboBox(listOfMails, curAcc.MlBxs);
+                CurrentData.curAcc.Srlz();
+                noConnection = true;
+                UpdateItemsInComboBox(listOfMails, CurrentData.curAcc.MlBxs);
+                noConnection = false;
             }
             this.Focus();
             //listOfMails.ItemsSource = curAcc.MlBxs;
@@ -56,17 +77,18 @@ namespace MyMailClient
         /// </summary>
         private void MenuItem_Click_3(object sender, RoutedEventArgs e)
         {
-            if (curMail == null)
+            if (CurrentData.curMail == null)
             {
                 Utility.MsgBox("Вам стоит выбрать почтовый ящик!", "Уведомление", this);
                 return;
             }
 
-            MailWindow mw = new MailWindow(curAcc, curMail);
+            MailWindow mw = new MailWindow(false);
             if (mw.ShowDialog() == true)
             {
-                curAcc.Srlz();
-                UpdateItemsInComboBox(listOfMails, curAcc.MlBxs, true);
+                CurrentData.curMail = CurrentData.curAcc.MlBxs[CurrentData.curAcc.MlBxs.Count - 1];
+                CurrentData.curAcc.Srlz();
+                UpdateItemsInComboBox(listOfMails, CurrentData.curAcc.MlBxs);
             }
             this.Focus();
             //listOfMails.SelectedItem = listOfMails.Items[0];
@@ -76,32 +98,18 @@ namespace MyMailClient
         /// </summary>
         private void MenuItem_Click_4(object sender, RoutedEventArgs e)
         {
-            if (curMail == null)
+            if (CurrentData.curMail == null)
             {
                 Utility.MsgBox("Вам стоит выбрать почтовый ящик!", "Уведомление", this);
                 return;
             }
 
-            curAcc.MlBxs.Remove(curMail);
-            curMail = null;
-            curAcc.Srlz();
-            UpdateItemsInComboBox(listOfMails, curAcc.MlBxs);
+            CurrentData.curAcc.MlBxs.Remove(CurrentData.curMail);
+            CurrentData.curMail = null;
+            CurrentData.curAcc.Srlz();
+            UpdateItemsInComboBox(listOfMails, CurrentData.curAcc.MlBxs);
         }
 
-        //TODO:Возможно переделать
-        private void UpdateItemsInComboBox(ComboBox cb, List<MailBox> items, bool upload = false)
-        {
-            var selItem = upload == true ? items[items.Count - 1] : cb.SelectedItem;
-            cb.Items.Clear();
-            foreach (MailBox m in items)
-            {
-                cb.Items.Add(m);
-            }
-            if (selItem != null && cb.Items.Contains(selItem))
-                cb.SelectedItem = selItem;
-
-            CountingBadge.Badge = items.Count;
-        }
         /// <summary>
         /// Выход из программы
         /// </summary>
@@ -123,12 +131,13 @@ namespace MyMailClient
         {
             if (listOfMails.SelectedItem != null)
             {
-                curMail = listOfMails.SelectedItem as MailBox;
+                CurrentData.curMail = listOfMails.SelectedItem as MailBox;
                 //string curFMN = listOfMails.SelectedItem.ToString();
                 //string temp = curFMN.Substring(curFMN.IndexOf('<') + 1, curFMN.LastIndexOf('>') - curFMN.IndexOf('<') - 1);
                 //curMail = curAcc.MlBxs.Find(x => x.Address.Contains(temp));
 
-                useMailBox();
+                if (noConnection == false)
+                    useMailBox();
             }
         }
 
@@ -139,7 +148,7 @@ namespace MyMailClient
                 listOfLetters.Items.Clear();
 
                 // TODO: выполнять подключение и загрузку писем в отдельном потоке
-                if (ImapConnection(curMail))
+                if (ImapConnection(CurrentData.curMail))
                     DownloadLetters();
 
                 DisplayLetters();
@@ -151,20 +160,28 @@ namespace MyMailClient
         }
         private bool ImapConnection(MailBox mailbox)
         {
-            ImapDispose();
-            imap = new ImapClient();
-            imap.Connect(mailbox.IMAP_Dom, mailbox.IMAP_Port, true);
-            imap.Authenticate(mailbox.Address, mailbox.Pass);
-            return true;
+            try
+            {
+                ImapDispose();
+                CurrentData.imap = new ImapClient();
+                CurrentData.imap.Connect(mailbox.IMAP_Dom, mailbox.IMAP_Port, true);
+                CurrentData.imap.Authenticate(mailbox.Address, mailbox.Pass);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Utility.MsgBox(ex.Message, "Ошибка", this);
+                return false;
+            }
         }
         private void ImapDispose()
         {
-            if (imap != null)
+            if (CurrentData.imap != null)
             {
-                if (imap.IsConnected)
-                    imap.Disconnect(false);
-                imap.Dispose();
-                imap = null;
+                if (CurrentData.imap.IsConnected)
+                    CurrentData.imap.Disconnect(false);
+                CurrentData.imap.Dispose();
+                CurrentData.imap = null;
             }
         }
         public void DownloadLetters()
@@ -172,7 +189,7 @@ namespace MyMailClient
             //GetFolder - получает папку для указаного пространства имён
             //PersonalNamespaces - Получаем пространство имён личных папок, 
             //которое содержит личные папки почтового ящика пользователя.
-            DownloadFolder(imap.GetFolder(imap.PersonalNamespaces[0]) as ImapFolder);
+            DownloadFolder(CurrentData.imap.GetFolder(CurrentData.imap.PersonalNamespaces[0]) as ImapFolder);
         }
         private void DownloadFolder(ImapFolder folder)
         {
@@ -186,7 +203,7 @@ namespace MyMailClient
                 //открываем папочку
                 folder.Open(FolderAccess.ReadOnly);
                 //прописываем для неё полный путь на диске
-                string dirFullPath = Account.ACC_DIR + "\\" + curAcc.Login + "\\" + curMail.Address + "\\" + folder.FullName;
+                string dirFullPath = Account.ACC_DIR + "\\" + CurrentData.curAcc.Login + "\\" + CurrentData.curMail.Address + "\\" + folder.FullName;
                 //проверяем есть ли папка, в отрицательном случае - создаём папку
                 if (!Directory.Exists(dirFullPath))
                     Directory.CreateDirectory(dirFullPath);
@@ -211,7 +228,7 @@ namespace MyMailClient
 
         private void DisplayLetters()
         {
-            string dirPath = Account.ACC_DIR + "\\" + curAcc.Login + "\\" + curMail.Address;
+            string dirPath = Account.ACC_DIR + "\\" + CurrentData.curAcc.Login + "\\" + CurrentData.curMail.Address;
             //string dirPath = Account.GetAccInfoPath(curAcc.Login) + "\\" + curMail.Address;
             if (!Directory.Exists(dirPath))
             {
