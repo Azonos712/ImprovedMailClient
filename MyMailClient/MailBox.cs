@@ -14,6 +14,7 @@ namespace MyMailClient
     [Serializable]
     public class MailBox
     {
+
         public const string DEFAULT_SMTP_SUBDOMAIN = "smtp.";
         public const string DEFAULT_SMTP_PORT = "587";
         public const string DEFAULT_IMAP_SUBDOMAIN = "imap.";
@@ -140,11 +141,14 @@ namespace MyMailClient
                 buf.Add(MimeMessage.Load(message));
             buf.Reverse();
             foreach (MimeMessage message in buf)
+            { 
                 twi.Items.Add(message);
+            }
 
             twi.Header = (pathFile.Substring(pathFile.LastIndexOf('\\') + 1)) + (twi.Items.Count > 0 ?
                     (" (" + twi.Items.Count + ")") : "");
 
+            twi.ItemTemplate = CurrentData.curTemplate;
 
             foreach (string subdirPath in Directory.GetDirectories(pathFile))
                 twi.Items.Add(DisplayFolder(subdirPath));

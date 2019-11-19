@@ -12,6 +12,7 @@ namespace MyMailClient
 {
     public static class Utility
     {
+        public static string HTML_CHARSET = "utf-8";
         public static void MsgBox(string msg, string title, Window w)
         {
             SoundPlayer sp = new SoundPlayer();

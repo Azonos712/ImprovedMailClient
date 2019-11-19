@@ -8,19 +8,20 @@
         TextElement.FontWeight="Regular"
         TextElement.FontSize="14"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        Title="Мой почтовый клиент" Height="460" Width="800" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+        Title="Мой почтовый клиент" Height="600" Width="1000" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="8*"/>
-            <RowDefinition Height="20*"/>
-            <RowDefinition Height="75*"/>
+            <RowDefinition Height="34*"/>
+            <RowDefinition Height="113*"/>
+            <RowDefinition Height="358*"/>
+            <RowDefinition Height="35*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="30*"/>
             <ColumnDefinition Width="70*"/>
         </Grid.ColumnDefinitions>
 
-        <Menu Grid.ColumnSpan="2" Grid.Column="0" Grid.Row="0" BorderBrush="Blue" BorderThickness="1" HorizontalAlignment="Left" VerticalAlignment="Top" Width="800" Height="30" Margin="0,0,-6,0">
+        <Menu Grid.ColumnSpan="2" Grid.Column="0" Grid.Row="0" BorderBrush="Blue" BorderThickness="1" HorizontalAlignment="Left" VerticalAlignment="Top" Width="1000" Height="30" Margin="0,0,-6,0">
             <MenuItem Header="Система" Height="30">
                 <MenuItem Height="30" Header="Выйти из аккаунта" Click="MenuItem_Click_2"></MenuItem>
                 <MenuItem Height="30" Header="Выйти из программы" Click="MenuItem_Click_1"></MenuItem>
@@ -40,17 +41,41 @@
             <MenuItem Header="Настройки" Height="30"></MenuItem>
             <MenuItem Header="Помощь" Height="30"></MenuItem>
         </Menu>
-        <materialDesign:Badged x:Name="CountingBadge" Grid.Column="0" Grid.Row="1" Badge="3" HorizontalAlignment="Center"  VerticalAlignment="Center">
-            <ComboBox x:Name="listOfMails" Grid.Column="0" Grid.Row="1" materialDesign:HintAssist.Hint="Текущий почтовый ящик" Style="{StaticResource MaterialDesignFloatingHintComboBox}" HorizontalAlignment="Center"  VerticalAlignment="Center" Width="210" SelectionChanged="listOfMails_SelectionChanged"/>
+        <materialDesign:Badged x:Name="CountingBadge" Grid.Column="0" Grid.Row="1" Badge="3" HorizontalAlignment="Center"  VerticalAlignment="Center" Margin="9,35">
+            <ComboBox x:Name="listOfMails" Grid.Column="0" Grid.Row="1" materialDesign:HintAssist.Hint="Текущий почтовый ящик" Style="{StaticResource MaterialDesignFloatingHintComboBox}" HorizontalAlignment="Center"  VerticalAlignment="Center" Width="270" SelectionChanged="listOfMails_SelectionChanged"/>
         </materialDesign:Badged>
 
-        <TreeView x:Name="listOfLetters" materialDesign:HintAssist.Hint="Приветики" Grid.Column="0" Grid.Row="2" BorderBrush="Blue" BorderThickness="1" HorizontalAlignment="Center" Height="285" VerticalAlignment="Center" Width="210">
- 
+        <TreeView x:Name="listOfLetters" materialDesign:HintAssist.Hint="Приветики" Grid.Column="0" Grid.Row="2" BorderBrush="Blue" BorderThickness="1" HorizontalAlignment="Center" Height="320" VerticalAlignment="Bottom" Width="270" MouseDoubleClick="listOfLetters_MouseDoubleClick" Margin="0,0,0,10">
+
         </TreeView>
 
-            <Border Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" BorderBrush="Blue" BorderThickness="0.9"  Height="370" Width="510" HorizontalAlignment="Center" VerticalAlignment="Center">
-            <WebBrowser Height="360" Width="500"  HorizontalAlignment="Center" VerticalAlignment="Center"></WebBrowser>
+        <Border Grid.Column="1" Grid.Row="2" BorderBrush="Blue" BorderThickness="0.9"  Height="320" Width="675" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,10">
+            <WebBrowser x:Name="wbBrwsr" Height="310" Width="665" HorizontalAlignment="Center" VerticalAlignment="Center"></WebBrowser>
         </Border>
+        <Label Width="100" HorizontalContentAlignment="Right" Content="Отправитель:" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10 10 0 0"/>
+        <Label Width="100" HorizontalContentAlignment="Right" Content="Тема:" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10 40 0 0"/>
+        <Label Width="100" HorizontalContentAlignment="Right" Content="Дата и время:" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10 70 0 0"/>
+        <Label Width="100" HorizontalContentAlignment="Right" Content="Шифрование:" Grid.Column="1" Grid.Row="1" Grid.RowSpan="3" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10 100 0 0"/>
+        <Label Width="100" HorizontalContentAlignment="Right" Content="Подпись:" Grid.Column="1" Grid.Row="1" Grid.RowSpan="3" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10 130 0 0"/>
+
+        <Label x:Name="lbl_send" Width="570" Content="..." Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="110 10 0 0"/>
+        <Label x:Name="lbl_subj" Width="570" Content="..." Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="110 40 0 0"/>
+        <Label x:Name="lbl_date" Width="570" Content="..." Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="110 70 0 0"/>
+        <Label x:Name="lbl_encr" Width="570" Content="..." Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="110 100 0 0"/>
+        <Label x:Name="lbl_ecp" Width="570" Content="..." Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="110 130 0 0"/>
+
+        <ItemsControl x:Name="attachPanel" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" Width="980" Height="30">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding FileName}" Foreground="Aqua" TextDecorations="Underline" Margin="0,0,4,0" Cursor="Hand"/>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
 
     </Grid>
 </Window>

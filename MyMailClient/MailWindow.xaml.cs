@@ -79,6 +79,8 @@ namespace MyMailClient
                 throw new Exception("Введите название!");
 
             var temp1 = CurrentData.curMail != null ? CurrentData.curMail.Name : String.Empty;
+            if (add == true)
+                temp1 = String.Empty;
             if (CurrentData.curAcc.ContainMailName(txt_name.Text.Trim(), temp1))
                 throw new Exception("Такое название уже используется!");
 
@@ -89,6 +91,8 @@ namespace MyMailClient
                 throw new Exception("Введён некорректный адрес!");
 
             var temp2 = CurrentData.curMail != null ? CurrentData.curMail.Address : String.Empty;
+            if (add == true)
+                temp2 = String.Empty;
             if (CurrentData.curAcc.ContainMailAddress(txt_address.Text.Trim(), temp2))
                 throw new Exception("Такой адрес уже используется!");
 
