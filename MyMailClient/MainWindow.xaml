@@ -45,16 +45,7 @@
         </materialDesign:Badged>
 
         <TreeView x:Name="listOfLetters" materialDesign:HintAssist.Hint="Приветики" Grid.Column="0" Grid.Row="2" BorderBrush="Blue" BorderThickness="1" HorizontalAlignment="Center" Height="285" VerticalAlignment="Center" Width="210">
-            <TreeViewItem Header="Hello">
-                <TreeViewItem Header="gaf">
-
-                </TreeViewItem>
-                <TreeViewItem Header="gaf2">
-                    <TreeViewItem Header="gaf3">
-
-                    </TreeViewItem>
-                </TreeViewItem>
-            </TreeViewItem>
+ 
         </TreeView>
 
             <Border Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" BorderBrush="Blue" BorderThickness="0.9"  Height="370" Width="510" HorizontalAlignment="Center" VerticalAlignment="Center">

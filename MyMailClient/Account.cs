@@ -34,6 +34,11 @@ namespace MyMailClient
             return ACC_DIR + "\\" + l + "\\" + INF_FILE;
         }
 
+        public static string GetAccMailDir()
+        {
+            return ACC_DIR + "\\" + CurrentData.curAcc.Login;
+        }
+
         public static bool CheckAccount(string login)
         {
             if (File.Exists(GetAccPath()))

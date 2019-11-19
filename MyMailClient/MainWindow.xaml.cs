@@ -138,6 +138,7 @@ namespace MyMailClient
 
                 if (noConnection == false)
                     useMailBox();
+                //useMailBox();
             }
         }
 
@@ -148,120 +149,21 @@ namespace MyMailClient
                 listOfLetters.Items.Clear();
 
                 // TODO: выполнять подключение и загрузку писем в отдельном потоке
-                if (ImapConnection(CurrentData.curMail))
-                    DownloadLetters();
+                if (CurrentData.curMail.ImapConnection())
+                    CurrentData.curMail.DownloadLetters();
+                else
+                    Utility.MsgBox("Что-то помешало подключению данного почтового ящика!", "Ошибка", this);
 
-                DisplayLetters();
-            }
-            catch (Exception ex)
-            {
-                Utility.MsgBox(ex.Message, "Ошибка", this);
-            }
-        }
-        private bool ImapConnection(MailBox mailbox)
-        {
-            try
-            {
-                ImapDispose();
-                CurrentData.imap = new ImapClient();
-                CurrentData.imap.Connect(mailbox.IMAP_Dom, mailbox.IMAP_Port, true);
-                CurrentData.imap.Authenticate(mailbox.Address, mailbox.Pass);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Utility.MsgBox(ex.Message, "Ошибка", this);
-                return false;
-            }
-        }
-        private void ImapDispose()
-        {
-            if (CurrentData.imap != null)
-            {
-                if (CurrentData.imap.IsConnected)
-                    CurrentData.imap.Disconnect(false);
-                CurrentData.imap.Dispose();
-                CurrentData.imap = null;
-            }
-        }
-        public void DownloadLetters()
-        {
-            //GetFolder - получает папку для указаного пространства имён
-            //PersonalNamespaces - Получаем пространство имён личных папок, 
-            //которое содержит личные папки почтового ящика пользователя.
-            DownloadFolder(CurrentData.imap.GetFolder(CurrentData.imap.PersonalNamespaces[0]) as ImapFolder);
-        }
-        private void DownloadFolder(ImapFolder folder)
-        {
-            //поиск под папок
-            foreach (ImapFolder subfolder in folder.GetSubfolders())
-                DownloadFolder(subfolder);
-
-            //Проверка на правильность папки (неправильные или ещё что-то)
-            if (folder.Attributes != FolderAttributes.None && (folder.Attributes & FolderAttributes.NonExistent) == 0)
-            {
-                //открываем папочку
-                folder.Open(FolderAccess.ReadOnly);
-                //прописываем для неё полный путь на диске
-                string dirFullPath = Account.ACC_DIR + "\\" + CurrentData.curAcc.Login + "\\" + CurrentData.curMail.Address + "\\" + folder.FullName;
-                //проверяем есть ли папка, в отрицательном случае - создаём папку
-                if (!Directory.Exists(dirFullPath))
-                    Directory.CreateDirectory(dirFullPath);
-                //Получаем файлы на диске
-                List<string> files = Directory.EnumerateFiles(dirFullPath, "*.eml").OrderBy(filename => filename).ToList();
-                //Получаем последний файл, если такой есть
-                string last = files.Count > 0 ? files.Last().Substring(files.Last().LastIndexOf('\\') + 1) : "0";
-                //получаем просто имя последнего файла
-                last = System.IO.Path.GetFileNameWithoutExtension(last);
-                //Ищем письма в заданной области по uid (проверяем есть ли новые письма, которые не синхронизированны)
-                IList<UniqueId> uids = folder.Search(MailKit.Search.SearchQuery.Uids(
-                        new UniqueIdRange(new UniqueId(uint.Parse(last) + 1), UniqueId.MaxValue)));
-                //Докачиваем новые письма
-                foreach (UniqueId uid in uids)
+                var temp = CurrentData.curMail.DisplayLetters();
+                for (int i = 0; i < temp.Count; i++)
                 {
-                    MimeMessage message = folder.GetMessage(uid);
-                    message.WriteTo(System.IO.Path.Combine(dirFullPath, uid.ToString().PadLeft(15, '0') + ".eml"));
+                    listOfLetters.Items.Add(temp[i]);
                 }
-                folder.Close();
             }
-        }
-
-        private void DisplayLetters()
-        {
-            string dirPath = Account.ACC_DIR + "\\" + CurrentData.curAcc.Login + "\\" + CurrentData.curMail.Address;
-            //string dirPath = Account.GetAccInfoPath(curAcc.Login) + "\\" + curMail.Address;
-            if (!Directory.Exists(dirPath))
+            catch (Exception ex)
             {
-                Utility.MsgBox("Этот почтовый ящик не был синхронизирован", "Ошибка", this);
-                return;
+                Utility.MsgBox(ex.Message, "Ошибка", this);
             }
-
-
-            foreach (string subdirPath in Directory.GetDirectories(dirPath))
-                listOfLetters.Items.Add(DisplayFolder(subdirPath));
-            //listOfLetters.Items.Add(twi);
-        }
-
-        private TreeViewItem DisplayFolder(string pathFile)
-        {
-            TreeViewItem twi = new TreeViewItem();
-
-            string[] messages = Directory.GetFiles(pathFile, "*.eml");
-            List<MimeMessage> buf = new List<MimeMessage>();
-            foreach (string message in messages)
-                buf.Add(MimeMessage.Load(message));
-            buf.Reverse();
-            foreach (MimeMessage message in buf)
-                twi.Items.Add(message);
-
-            twi.Header = (pathFile.Substring(pathFile.LastIndexOf('\\') + 1)) + (twi.Items.Count > 0 ?
-                    (" (" + twi.Items.Count + ")") : "");
-
-
-            foreach (string subdirPath in Directory.GetDirectories(pathFile))
-                twi.Items.Add(DisplayFolder(subdirPath));
-
-            return twi;
         }
     }
 }
