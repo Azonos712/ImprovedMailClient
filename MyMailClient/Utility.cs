@@ -7,6 +7,9 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Media.Imaging;
 
 namespace MyMailClient
 {
@@ -39,6 +42,25 @@ namespace MyMailClient
             {
                 return false;
             }
+        }
+
+        public static StackPanel panelWithIcon(string image,string text)
+        {
+            StackPanel pan = new StackPanel();
+
+            pan.Orientation = Orientation.Horizontal;
+
+            PngBitmapDecoder icon = new PngBitmapDecoder(new Uri("Resources\\" + image,
+                UriKind.RelativeOrAbsolute), BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
+            Image img = new Image();
+            img.Height = 19;
+            img.Height = 19;
+            img.Source = icon.Frames[0];
+            pan.Children.Add(img);
+
+            pan.Children.Add(new TextBlock(new Run("  " + text)));
+
+            return pan;
         }
     }
 }

@@ -46,7 +46,21 @@
         </materialDesign:Badged>
 
         <TreeView x:Name="listOfLetters" materialDesign:HintAssist.Hint="Приветики" Grid.Column="0" Grid.Row="2" BorderBrush="Blue" BorderThickness="1" HorizontalAlignment="Center" Height="320" VerticalAlignment="Bottom" Width="270" MouseDoubleClick="listOfLetters_MouseDoubleClick" Margin="0,0,0,10">
-
+            <TreeViewItem Header="OS" >
+                <TreeViewItem Header="Amiga" />
+                <TreeViewItem>
+                    <TreeViewItem.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <Viewbox Width="19" Height="19">
+                                <materialDesign:PackIcon Kind="Folder" />
+                            </Viewbox>
+                            <TextBlock Margin="10 0 0 0">
+                                Android
+                            </TextBlock>
+                        </StackPanel>
+                    </TreeViewItem.Header>
+                </TreeViewItem>
+            </TreeViewItem>
         </TreeView>
 
         <Border Grid.Column="1" Grid.Row="2" BorderBrush="Blue" BorderThickness="0.9"  Height="320" Width="675" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,10">

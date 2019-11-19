@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Media.Imaging;
 
 namespace MyMailClient
 {
@@ -139,14 +141,26 @@ namespace MyMailClient
                 buf.Add(MimeMessage.Load(message));
             buf.Reverse();
             foreach (MimeMessage message in buf)
-            { 
+            {
+
+                TreeViewItem lettertwi = new TreeViewItem();
+                bool read = true;
+                if (read)
+                    lettertwi.Header = Utility.panelWithIcon("empty_mail.png", "Название письма");
+                else
+                    lettertwi.Header = Utility.panelWithIcon("full_mail.png", "Название письма");
+
+                //lettertwi.Sou
+
                 twi.Items.Add(message);
             }
 
-            twi.Header = (pathFile.Substring(pathFile.LastIndexOf('\\') + 1)) + (twi.Items.Count > 0 ?
+            string temp = (pathFile.Substring(pathFile.LastIndexOf('\\') + 1)) + (twi.Items.Count > 0 ?
                     (" (" + twi.Items.Count + ")") : "");
 
-            twi.ItemTemplate = CurrentData.curTemplate;
+            twi.Header = Utility.panelWithIcon("folder.png",temp);
+
+            //twi.ItemTemplate = CurrentData.curTemplate;
 
             foreach (string subdirPath in Directory.GetDirectories(pathFile))
                 twi.Items.Add(DisplayFolder(subdirPath));

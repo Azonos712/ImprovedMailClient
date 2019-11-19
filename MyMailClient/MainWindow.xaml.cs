@@ -25,7 +25,7 @@ namespace MyMailClient
         {
             InitializeComponent();
 
-            setTemplate();
+            //setTemplate();
 
             UpdateItemsInComboBox(listOfMails, CurrentData.curAcc.MlBxs);
             //listOfMails.ItemsSource = curAcc.MlBxs;
@@ -35,6 +35,10 @@ namespace MyMailClient
         {
             var spFactory = new FrameworkElementFactory(typeof(StackPanel));
             spFactory.SetValue(StackPanel.OrientationProperty, Orientation.Horizontal);
+
+            var iconTbFactory = new FrameworkElementFactory(typeof(Image));
+            iconTbFactory.SetBinding(Image.SourceProperty, new Binding("Resources\\empty_mail.png"));
+            spFactory.AppendChild(iconTbFactory);
 
             var senderTbFactory = new FrameworkElementFactory(typeof(TextBlock));
             senderTbFactory.SetBinding(TextBlock.TextProperty, new Binding("From[0].Name"));
