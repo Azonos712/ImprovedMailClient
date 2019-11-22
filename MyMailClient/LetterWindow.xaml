@@ -8,12 +8,9 @@
         TextElement.FontWeight="Regular"
         TextElement.FontSize="14"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        Title="Мой почтовый клиент" Height="600" Width="1000" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+        Title="Мой почтовый клиент" Height="570" Width="750" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
     <Grid>
 
-        <Border Grid.Column="1" Grid.Row="2" BorderBrush="Blue" BorderThickness="0.9"  Height="320" Width="675" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,10">
-            <WebBrowser x:Name="wbBrwsr" Height="310" Width="665" HorizontalAlignment="Center" VerticalAlignment="Center"></WebBrowser>
-        </Border>
         <Label Width="100" HorizontalContentAlignment="Right" Content="Отправитель:" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10 10 0 0"/>
         <Label Width="100" HorizontalContentAlignment="Right" Content="Тема:" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10 40 0 0"/>
         <Label Width="100" HorizontalContentAlignment="Right" Content="Дата и время:" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10 70 0 0"/>
@@ -26,7 +23,12 @@
         <Label x:Name="lbl_encr" Width="570" Content="..." Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="110 100 0 0"/>
         <Label x:Name="lbl_ecp" Width="570" Content="..." Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="110 130 0 0"/>
 
-        <ItemsControl x:Name="attachPanel" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" Width="980" Height="30">
+
+        <Border Grid.Column="1" Grid.Row="2" BorderBrush="Blue" BorderThickness="0.9"  Height="320" Width="675" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,50">
+            <WebBrowser x:Name="wbBrwsr" Height="310" Width="665" HorizontalAlignment="Center" VerticalAlignment="Center"></WebBrowser>
+        </Border>
+        
+        <ItemsControl x:Name="attachPanel" Margin="20 0 0 10" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="500" Height="30">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding FileName}" Foreground="Aqua" TextDecorations="Underline" Margin="0,0,4,0" Cursor="Hand"/>

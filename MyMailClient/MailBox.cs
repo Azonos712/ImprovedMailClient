@@ -120,7 +120,7 @@ namespace MyMailClient
             string dirPath = Account.GetAccMailDir() + "\\" + Address;
             if (!Directory.Exists(dirPath))
             {
-                throw new Exception("Этот почтовый ящик не был синхронизирован");
+                throw new Exception("Этот почтовый ящик не был синхронизирован. Для дальнейшей работы с ним попробуйте его синхронизировать.");
             }
 
             List<TreeViewItem> itco = new List<TreeViewItem>();
@@ -151,8 +151,6 @@ namespace MyMailClient
 
             twi.Header = Utility.panelWithIcon("folder.png",temp);
 
-            //twi.ItemTemplate = CurrentData.curTemplate;
-
             foreach (string subdirPath in Directory.GetDirectories(pathFile))
                 twi.Items.Add(DisplayFolder(subdirPath));
 
@@ -180,6 +178,14 @@ namespace MyMailClient
             //    twi.Items.Add(message);
             //}
             return buf;
+        }
+
+        public void deleteMailFolder()
+        {
+            if (Directory.Exists(Account.GetAccMailDir() + "\\" + Address))
+            {
+                Directory.Delete(Account.GetAccMailDir() + "\\" + Address, true);
+            }
         }
 
     }

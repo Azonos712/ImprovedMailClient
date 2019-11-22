@@ -27,45 +27,25 @@ namespace MyMailClient
         {
             InitializeComponent();
 
-            setTemplate();
-
             UpdateItemsInComboBox(listOfMails, CurrentData.curAcc.MlBxs);
             //listOfMails.ItemsSource = curAcc.MlBxs;
         }
 
-        void setTemplate()
+        /// <summary>
+        /// Выход из программы
+        /// </summary>
+        private void MenuItem_Click_1(object sender, RoutedEventArgs e)
         {
-            var spFactory = new FrameworkElementFactory(typeof(StackPanel));
-            spFactory.SetValue(StackPanel.OrientationProperty, Orientation.Horizontal);
-
-            //var iconTbFactory = new FrameworkElementFactory(typeof(Image));
-            //iconTbFactory.SetBinding(Image.SourceProperty, new Binding("Resources\\empty_mail.png"));
-            //spFactory.AppendChild(iconTbFactory);
-
-            var senderTbFactory = new FrameworkElementFactory(typeof(TextBlock));
-            senderTbFactory.SetBinding(TextBlock.TextProperty, new Binding("From[0].Name"));
-            spFactory.AppendChild(senderTbFactory);
-
-            var sep1TbFactory = new FrameworkElementFactory(typeof(TextBlock));
-            sep1TbFactory.SetValue(TextBlock.TextProperty, " -> ");
-            spFactory.AppendChild(sep1TbFactory);
-
-            var receiverTbFactory = new FrameworkElementFactory(typeof(TextBlock));
-            receiverTbFactory.SetBinding(TextBlock.TextProperty, new Binding("To[0].Address"));
-            spFactory.AppendChild(receiverTbFactory);
-
-            var sep2TbFactory = new FrameworkElementFactory(typeof(TextBlock));
-            sep2TbFactory.SetValue(TextBlock.TextProperty, " : ");
-            spFactory.AppendChild(sep2TbFactory);
-
-            var subjectTbFactory = new FrameworkElementFactory(typeof(TextBlock));
-            subjectTbFactory.SetBinding(TextBlock.TextProperty, new Binding("Subject"));
-            spFactory.AppendChild(subjectTbFactory);
-
-            // TODO: установить триггер "прочитано-не прочитано"
-
-            CurrentData.curTemplate = new DataTemplate();
-            CurrentData.curTemplate.VisualTree = spFactory;
+            Environment.Exit(0);
+        }
+        /// <summary>
+        /// Выход из аккаунта
+        /// </summary>
+        private void MenuItem_Click_2(object sender, RoutedEventArgs e)
+        {
+            Authorization az = new Authorization();
+            az.Show();
+            this.Close();
         }
 
         //TODO:Возможно переделать
@@ -88,7 +68,7 @@ namespace MyMailClient
         /// <summary>
         /// Добавить новый почтовый ящик
         /// </summary>
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        private void btn_add_Click(object sender, RoutedEventArgs e)
         {
             MailWindow mw = new MailWindow(true);
             if (mw.ShowDialog() == true)
@@ -101,10 +81,11 @@ namespace MyMailClient
             this.Focus();
             //listOfMails.ItemsSource = curAcc.MlBxs;
         }
+
         /// <summary>
         /// Изменить выбранный почтовый ящик
         /// </summary>
-        private void MenuItem_Click_3(object sender, RoutedEventArgs e)
+        private void btn_settings_Click(object sender, RoutedEventArgs e)
         {
             if (CurrentData.curMail == null)
             {
@@ -120,12 +101,12 @@ namespace MyMailClient
                 UpdateItemsInComboBox(listOfMails, CurrentData.curAcc.MlBxs);
             }
             this.Focus();
-            //listOfMails.SelectedItem = listOfMails.Items[0];
         }
+
         /// <summary>
         /// Удалить выбранный почтовый ящик
         /// </summary>
-        private void MenuItem_Click_4(object sender, RoutedEventArgs e)
+        private void btn_delete_Click(object sender, RoutedEventArgs e)
         {
             if (CurrentData.curMail == null)
             {
@@ -135,27 +116,16 @@ namespace MyMailClient
 
             CurrentData.curAcc.MlBxs.Remove(CurrentData.curMail);
             CurrentData.curMail = null;
-            listOfFolders.Items.Clear();
-            //showLetter(null);
+            clearLetFol();
             CurrentData.curAcc.Srlz();
             UpdateItemsInComboBox(listOfMails, CurrentData.curAcc.MlBxs);
         }
 
-        /// <summary>
-        /// Выход из программы
-        /// </summary>
-        private void MenuItem_Click_1(object sender, RoutedEventArgs e)
+
+        private void btn_synch_Click(object sender, RoutedEventArgs e)
         {
-            Environment.Exit(0);
-        }
-        /// <summary>
-        /// Выход из аккаунта
-        /// </summary>
-        private void MenuItem_Click_2(object sender, RoutedEventArgs e)
-        {
-            Authorization az = new Authorization();
-            az.Show();
-            this.Close();
+            useSynch(); 
+            showFolders();
         }
 
         private void listOfMails_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -167,30 +137,47 @@ namespace MyMailClient
                 //string temp = curFMN.Substring(curFMN.IndexOf('<') + 1, curFMN.LastIndexOf('>') - curFMN.IndexOf('<') - 1);
                 //curMail = curAcc.MlBxs.Find(x => x.Address.Contains(temp));
 
-                if (noConnection == false)
-                    useMailBox();
-                //useMailBox();
+                showFolders();
+
+                //if (noConnection == false)
+                //useSynch();
+
             }
         }
 
-        void useMailBox()
+        void showFolders()
         {
             try
             {
-                listOfFolders.Items.Clear();
-                //showLetter(null);
-
-                // TODO: выполнять подключение и загрузку писем в отдельном потоке
-                if (CurrentData.curMail.ImapConnection())
-                    CurrentData.curMail.DownloadLetters();
-                else
-                    Utility.MsgBox("Что-то помешало подключению данного почтового ящика!", "Ошибка", this);
+                clearLetFol();
 
                 var temp = CurrentData.curMail.DisplayFolders();
                 for (int i = 0; i < temp.Count; i++)
                 {
                     listOfFolders.Items.Add(temp[i]);
                 }
+            }
+            catch (Exception ex)
+            {
+                Utility.MsgBox(ex.Message, "Ошибка", this);
+            }
+        }
+
+        void useSynch()
+        {
+            try
+            {
+                //полная очистка ящика
+                CurrentData.curMail.deleteMailFolder();
+
+                // TODO: выполнять подключение и загрузку писем в отдельном потоке
+                if (CurrentData.curMail.ImapConnection())
+                    CurrentData.curMail.DownloadLetters();
+                else
+                    Utility.MsgBox("Что-то помешало подключению данного почтового ящика! " +
+                        "Будут отображены только письма, которые были синхронизированны во время " +
+                        "последнего сеанса", "Ошибка", this);
+
             }
             catch (Exception ex)
             {
@@ -213,7 +200,7 @@ namespace MyMailClient
         //{
         //}
 
-        private void listOfLetters_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        private void listOfFolders_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             if (listOfFolders.SelectedItem != null)
             {
@@ -228,9 +215,33 @@ namespace MyMailClient
 
                 List<MimeMessage> msg = CurrentData.curMail.DisplayLetters(fullPath);
 
-                listOfLetters.DataContext = msg;
+                //listOfLetters.DataContext = msg;
+                listOfLetters.ItemsSource = msg;
             }
         }
+
+        private void listOfLetters_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            CurrentData.curLetter = listOfLetters.SelectedItem as MimeMessage;
+
+
+            LetterWindow lw = new LetterWindow();
+            lw.ShowDialog();
+
+            this.Focus();
+            //    if (message != null)
+            //    {
+            //        // TODO: добавить флаг "прочитано"
+            //        //showLetter(message);
+            //    }
+        }
+
+        void clearLetFol()
+        {
+            listOfFolders.Items.Clear();
+            listOfLetters.ItemsSource = null;
+        }
+
 
     }
 }

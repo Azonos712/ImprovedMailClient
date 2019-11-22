@@ -47,16 +47,19 @@ namespace MyMailClient
 
         public static StackPanel panelWithIcon(string image,string text)
         {
-            StackPanel pan = new StackPanel();
-
-            pan.Orientation = Orientation.Horizontal;
+            StackPanel pan = new StackPanel
+            {
+                Orientation = Orientation.Horizontal
+            };
 
             PngBitmapDecoder icon = new PngBitmapDecoder(new Uri("Resources\\" + image,
                 UriKind.RelativeOrAbsolute), BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
-            Image img = new Image();
-            img.Height = 19;
-            img.Height = 19;
-            img.Source = icon.Frames[0];
+            Image img = new Image
+            {
+                Height = 19,
+                Width = 19,
+                Source = icon.Frames[0]
+            };
             pan.Children.Add(img);
 
             pan.Children.Add(new TextBlock(new Run("  " + text)));

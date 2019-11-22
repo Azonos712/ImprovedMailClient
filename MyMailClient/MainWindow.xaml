@@ -26,14 +26,6 @@
                 <MenuItem Height="30" Header="Выйти из аккаунта" Click="MenuItem_Click_2"></MenuItem>
                 <MenuItem Height="30" Header="Выйти из программы" Click="MenuItem_Click_1"></MenuItem>
             </MenuItem>
-            <MenuItem Header="Управление ящиками" Height="30">
-                <MenuItem Height="30" Header="Добавить почтовый ящик" Click="MenuItem_Click"></MenuItem>
-                <MenuItem Height="30" Header="Изменить выбранный почтовый ящик" Click="MenuItem_Click_3"></MenuItem>
-                <MenuItem Height="30" Header="Удалить выбранный почтовый ящик" Click="MenuItem_Click_4"></MenuItem>
-            </MenuItem>
-            <MenuItem Header="Письма" Height="30">
-                <MenuItem Height="30" Header="Написать письмо"></MenuItem>
-            </MenuItem>
             <MenuItem Header="Менеджер криптографии" Height="30">
                 <MenuItem Height="30" Header="Зашифровать/расшифровать сообщение"></MenuItem>
                 <MenuItem Height="30" Header="Подписать/верифицировать сообщение"></MenuItem>
@@ -41,14 +33,36 @@
             <MenuItem Header="Настройки" Height="30"></MenuItem>
             <MenuItem Header="Помощь" Height="30"></MenuItem>
         </Menu>
-        <materialDesign:Badged x:Name="CountingBadge" Grid.Column="0" Grid.Row="1" Badge="3" HorizontalAlignment="Center"  VerticalAlignment="Center" Margin="9,35">
+
+        <Button x:Name="btn_add" Click="btn_add_Click" Height="50" Width="50" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0 5 210 0" Grid.Row="1" Style="{StaticResource MaterialDesignFloatingActionButton}">
+            <materialDesign:PackIcon Kind="Add" Height="35" Width="35" />
+            </Button>
+        <Button x:Name="btn_settings" Click="btn_settings_Click" Height="50" Width="50" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0 5 70 0" Grid.Row="1" Style="{StaticResource MaterialDesignFloatingActionButton}">
+            <materialDesign:PackIcon Kind="SettingsOutline" Height="35" Width="35" />
+        </Button>
+        <Button x:Name="btn_delete" Click="btn_delete_Click" Height="50" Width="50" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="70 5 0 0" Grid.Row="1" Style="{StaticResource MaterialDesignFloatingActionButton}">
+            <materialDesign:PackIcon Kind="DeleteOutline" Height="35" Width="35" />
+            </Button>
+        <Button x:Name="btn_synch" Height="50" Width="50" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="210 5 0 0" Grid.Row="1" Style="{StaticResource MaterialDesignFloatingActionButton}" Click="btn_synch_Click">
+            <materialDesign:PackIcon Kind="CloudDownload" Height="35" Width="35" />
+        </Button>
+
+        <materialDesign:Badged x:Name="CountingBadge" Grid.Column="0" Grid.Row="1" Badge="3" HorizontalAlignment="Center"  VerticalAlignment="Bottom">
             <ComboBox x:Name="listOfMails" Grid.Column="0" Grid.Row="1" materialDesign:HintAssist.Hint="Текущий почтовый ящик" Style="{StaticResource MaterialDesignFloatingHintComboBox}" HorizontalAlignment="Center"  VerticalAlignment="Center" Width="270" SelectionChanged="listOfMails_SelectionChanged"/>
         </materialDesign:Badged>
+        <Button Margin="0 15 0 0" Grid.Row="2" Content="Написать" HorizontalAlignment="Center" VerticalAlignment="Top"  Width="270"/>
 
-        <TreeView x:Name="listOfFolders" Grid.Column="0" Grid.Row="2" BorderBrush="Blue" BorderThickness="1" HorizontalAlignment="Center" Height="320" VerticalAlignment="Bottom" Width="270" SelectedItemChanged="listOfLetters_SelectedItemChanged" Margin="0,0,0,10">
+
+        <TreeView x:Name="listOfFolders" Grid.Column="0" Grid.Row="2" BorderBrush="Blue" BorderThickness="1" HorizontalAlignment="Center" Height="300" VerticalAlignment="Bottom" Width="270" SelectedItemChanged="listOfFolders_SelectedItemChanged" Margin="0,0,0,10">
 
         </TreeView>
-        <DataGrid x:Name="listOfLetters" IsReadOnly="True" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" BorderBrush="Blue" BorderThickness="1" HorizontalAlignment="Center" Height="450" Width="650" VerticalAlignment="Bottom" Margin="0 0 0 10"/>
+        <DataGrid ItemsSource="{Binding msg}" MouseDoubleClick="listOfLetters_MouseDoubleClick" x:Name="listOfLetters" AutoGenerateColumns="False" IsReadOnly="True" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" BorderBrush="Blue" BorderThickness="1" HorizontalAlignment="Center" Height="485" Width="650" VerticalAlignment="Bottom" Margin="0 0 0 10">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Отправитель" Binding="{Binding Path=From}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Тема" Binding="{Binding Path=Subject}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Время" Binding="{Binding Path=Date}"></DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
 
 
 
