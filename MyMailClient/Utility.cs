@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace MyMailClient
@@ -61,6 +62,29 @@ namespace MyMailClient
             pan.Children.Add(new TextBlock(new Run("  " + text)));
 
             return pan;
+        }
+
+        public static string strFromPanelWithIcon(TreeViewItem twi)
+        {
+            StackPanel sp = twi.Header as StackPanel;
+            TextBlock tb = sp.Children[1] as TextBlock;
+            Inline ic = tb.Inlines.ElementAt(0);
+            TextRange tr = new TextRange(ic.ContentStart, ic.ContentEnd);
+            string str = tr.Text.Trim();
+
+            if (new Regex(@"^[A-Za-zА-Яа-я0-9-]+ \(\d+\)$").IsMatch(str))
+                str = str.Substring(0,str.Length - (str.Length - str.LastIndexOf(' ')));
+
+            return str;
+        }
+
+        public static TreeViewItem GetParentItem(TreeViewItem item)
+        {
+            for (var i = VisualTreeHelper.GetParent(item); i != null; i = VisualTreeHelper.GetParent(i))
+                if (i is TreeViewItem)
+                    return (TreeViewItem)i;
+
+            return null;
         }
     }
 }

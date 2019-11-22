@@ -92,7 +92,7 @@ namespace MyMailClient
                 //открываем папочку
                 folder.Open(FolderAccess.ReadOnly);
                 //прописываем для неё полный путь на диске
-                string dirFullPath = Account.GetAccMailDir() + "\\" + Address + "\\" + folder.FullName;
+                string dirFullPath = Account.GetAccMailDir() + "\\" + Address + "\\" + folder.FullName.Replace('|','\\');
                 //проверяем есть ли папка, в отрицательном случае - создаём папку
                 if (!Directory.Exists(dirFullPath))
                     Directory.CreateDirectory(dirFullPath);
@@ -115,13 +115,14 @@ namespace MyMailClient
             }
         }
 
-        public List<TreeViewItem> DisplayLetters()
+        public List<TreeViewItem> DisplayFolders()
         {
             string dirPath = Account.GetAccMailDir() + "\\" + Address;
             if (!Directory.Exists(dirPath))
             {
                 throw new Exception("Этот почтовый ящик не был синхронизирован");
             }
+
             List<TreeViewItem> itco = new List<TreeViewItem>();
 
             foreach (string subdirPath in Directory.GetDirectories(dirPath))
@@ -139,24 +140,14 @@ namespace MyMailClient
             List<MimeMessage> buf = new List<MimeMessage>();
             foreach (string message in messages)
                 buf.Add(MimeMessage.Load(message));
-            buf.Reverse();
-            foreach (MimeMessage message in buf)
-            {
+            //buf.Reverse();
+            //foreach (MimeMessage message in buf)
+            //{
+            //    twi.Items.Add(message);
+            //}
 
-                TreeViewItem lettertwi = new TreeViewItem();
-                bool read = true;
-                if (read)
-                    lettertwi.Header = Utility.panelWithIcon("empty_mail.png", "Название письма");
-                else
-                    lettertwi.Header = Utility.panelWithIcon("full_mail.png", "Название письма");
-
-                //lettertwi.Sou
-
-                twi.Items.Add(message);
-            }
-
-            string temp = (pathFile.Substring(pathFile.LastIndexOf('\\') + 1)) + (twi.Items.Count > 0 ?
-                    (" (" + twi.Items.Count + ")") : "");
+            string temp = (pathFile.Substring(pathFile.LastIndexOf('\\') + 1)) + (buf.Count > 0 ?
+                    (" (" + buf.Count + ")") : "");
 
             twi.Header = Utility.panelWithIcon("folder.png",temp);
 
@@ -166,6 +157,29 @@ namespace MyMailClient
                 twi.Items.Add(DisplayFolder(subdirPath));
 
             return twi;
+        }
+
+        public List<MimeMessage> DisplayLetters(string pathFolder)
+        {
+            string[] messages = Directory.GetFiles(pathFolder, "*.eml");
+            List<MimeMessage> buf = new List<MimeMessage>();
+            foreach (string message in messages)
+                buf.Add(MimeMessage.Load(message));
+            buf.Reverse();
+            //foreach (MimeMessage message in buf)
+            //{
+
+            //    TreeViewItem lettertwi = new TreeViewItem();
+            //    bool read = true;
+            //    if (read)
+            //        lettertwi.Header = Utility.panelWithIcon("empty_mail.png", "Название письма");
+            //    else
+            //        lettertwi.Header = Utility.panelWithIcon("full_mail.png", "Название письма");
+
+
+            //    twi.Items.Add(message);
+            //}
+            return buf;
         }
 
     }
