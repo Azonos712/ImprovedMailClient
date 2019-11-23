@@ -17,11 +17,6 @@ namespace MyMailClient
     /// </summary>
     public partial class MainWindow : Window
     {
-        //Account curAcc;
-        //MailBox curMail;
-        //ImapClient imap;
-
-        //private static DataTemplate letterDT;
         bool noConnection = false;
         public MainWindow()
         {
@@ -223,11 +218,11 @@ namespace MyMailClient
         private void listOfLetters_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             CurrentData.curLetter = listOfLetters.SelectedItem as MimeMessage;
-
-
-            LetterWindow lw = new LetterWindow();
-            lw.ShowDialog();
-
+            if (CurrentData.curLetter != null)
+            {
+                LetterWindow lw = new LetterWindow();
+                lw.ShowDialog();
+            }
             this.Focus();
             //    if (message != null)
             //    {
