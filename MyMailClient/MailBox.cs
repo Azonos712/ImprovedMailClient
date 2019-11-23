@@ -74,6 +74,73 @@ namespace MyMailClient
             }
         }
 
+
+
+        public void testDownloadLetters()
+        {
+            IList<IMailFolder> folders = CurrentData.imap.GetFolders(CurrentData.imap.PersonalNamespaces.First());
+            List<string> names = folders.Select(t => t.FullName).ToList();
+
+            foreach (var folder in folders)
+            {
+                folder.Open(FolderAccess.ReadOnly);
+
+                string folderFullPath = Account.GetAccMailDir() + "\\" + Address + "\\" + folder.FullName.Replace('|', '\\');
+                //проверяем есть ли папка, в отрицательном случае - создаём папку
+                if (!Directory.Exists(folderFullPath))
+                    Directory.CreateDirectory(folderFullPath);
+
+                var uids = folder.Search(SearchQuery.All);
+
+                foreach (var uid in uids)
+                {
+                    var message = folder.GetMessage(uid);
+                    message.WriteTo(folderFullPath + "\\" + string.Format("{0}.eml", uid));
+                }
+            }
+        }
+
+        public void testDownloadBodyParts(ImapFolder folder)
+        {
+            var items = folder.Fetch(0, -1, MessageSummaryItems.UniqueId | MessageSummaryItems.Flags | MessageSummaryItems.Envelope | MessageSummaryItems.BodyStructure);
+            foreach (var item in items)
+            {
+                var message = folder.GetMessage(item.UniqueId);
+                var temp = item.Flags.Value;
+                var bodyPart = item.TextBody;
+            }
+        }
+
+        public void ResyncFolder(ImapFolder folder, List<CachedMessageInfo> cache, ref uint cachedUidValidity)
+        {
+            var items = folder.Fetch(0, -1, MessageSummaryItems.Full | MessageSummaryItems.UniqueId | MessageSummaryItems.Size | MessageSummaryItems.Flags | MessageSummaryItems.BodyStructure);
+            foreach (var item in items)
+            {
+                var message = folder.GetMessage(item.UniqueId);
+                var test = item.Envelope;
+
+                var temp = item.Flags.Value;
+                var bodyPart = item.TextBody;
+            }
+
+            IList<IMessageSummary> summaries;
+
+            folder.Open(FolderAccess.ReadOnly);
+
+            if (cache.Count > 0)
+            {
+
+            }
+            else
+            {
+                cachedUidValidity = folder.UidValidity;
+            }
+        }
+
+
+
+
+
         public void DownloadLetters()
         {
             //GetFolder - получает папку для указаного пространства имён
