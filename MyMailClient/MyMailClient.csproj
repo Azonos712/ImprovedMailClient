@@ -87,6 +87,7 @@
     </Compile>
     <Compile Include="Cryptography.cs" />
     <Compile Include="CurrentData.cs" />
+    <Compile Include="HelpMimeMessage.cs" />
     <Compile Include="LetterWindow.xaml.cs">
       <DependentUpon>LetterWindow.xaml</DependentUpon>
     </Compile>

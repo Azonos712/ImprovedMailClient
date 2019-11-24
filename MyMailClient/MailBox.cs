@@ -245,26 +245,24 @@ namespace MyMailClient
             return twi;
         }
 
-        public List<MimeMessage> DisplayLetters(string pathFolder)
+        public List<HelpMimeMessage> DisplayLetters(string pathFolder)
         {
             string[] messages = Directory.GetFiles(pathFolder, "*.eml");
-            List<MimeMessage> buf = new List<MimeMessage>();
+
+            List<HelpMimeMessage> buf = new List<HelpMimeMessage>();
+
             foreach (string message in messages)
-                buf.Add(MimeMessage.Load(message));
+            {
+                HelpMimeMessage temp = new HelpMimeMessage();
+                temp.Msg = MimeMessage.Load(message);
+                temp.SeenFlag = message.Contains("Seen") ? true : false;
+                temp.Seen = message.Contains("Seen") ? new FileInfo("Resources\\empty_mail.png").FullName : new FileInfo("Resources\\full_mail.png").FullName;
+
+                buf.Add(temp);
+            }
+
             buf.Reverse();
-            //foreach (MimeMessage message in buf)
-            //{
 
-            //    TreeViewItem lettertwi = new TreeViewItem();
-            //    bool read = true;
-            //    if (read)
-            //        lettertwi.Header = Utility.panelWithIcon("empty_mail.png", "Название письма");
-            //    else
-            //        lettertwi.Header = Utility.panelWithIcon("full_mail.png", "Название письма");
-
-
-            //    twi.Items.Add(message);
-            //}
             return buf;
         }
     }

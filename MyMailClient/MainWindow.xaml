@@ -8,7 +8,7 @@
         TextElement.FontWeight="Regular"
         TextElement.FontSize="14"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        Title="Мой почтовый клиент" Height="600" Width="1000" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+        Title="Мой почтовый клиент" Height="600" Width="1200" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="34*"/>
@@ -17,7 +17,7 @@
             <RowDefinition Height="35*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="30*"/>
+            <ColumnDefinition Width="25*"/>
             <ColumnDefinition Width="70*"/>
         </Grid.ColumnDefinitions>
 
@@ -53,18 +53,29 @@
         <Button Margin="0 15 0 0" Grid.Row="2" Content="Написать" HorizontalAlignment="Center" VerticalAlignment="Top"  Width="270"/>
 
 
-        <TreeView x:Name="listOfFolders" Grid.Column="0" Grid.Row="2" BorderBrush="Blue" BorderThickness="1" HorizontalAlignment="Center" Height="300" VerticalAlignment="Bottom" Width="270" SelectedItemChanged="listOfFolders_SelectedItemChanged" Margin="0,0,0,10">
+        <TreeView x:Name="listOfFolders" Grid.Column="0" Grid.Row="2" BorderBrush="Blue" BorderThickness="1" HorizontalAlignment="Center" Height="310" VerticalAlignment="Bottom" Width="270" SelectedItemChanged="listOfFolders_SelectedItemChanged" Margin="0,0,0,0">
 
         </TreeView>
-        <DataGrid ItemsSource="{Binding msg}" MouseDoubleClick="listOfLetters_MouseDoubleClick" x:Name="listOfLetters" AutoGenerateColumns="False" IsReadOnly="True" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" BorderBrush="Blue" BorderThickness="1" HorizontalAlignment="Center" Height="485" Width="650" VerticalAlignment="Bottom" Margin="0 0 0 10">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Отправитель" Binding="{Binding Path=From}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Тема" Binding="{Binding Path=Subject}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Время" Binding="{Binding Path=Date}"></DataGridTextColumn>
-            </DataGrid.Columns>
-        </DataGrid>
 
-
+        <Border Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" BorderBrush="Blue" BorderThickness="1" HorizontalAlignment="Center" Height="485" Width="850" VerticalAlignment="Bottom" Margin="0 0 0 0">
+            <ListView ItemsSource="{Binding msg}" MouseDoubleClick="listOfLetters_MouseDoubleClick" x:Name="listOfLetters">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="  #" Width="50">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Image Source="{Binding Path=Seen}" MaxHeight="24" MaxWidth="24" Stretch="UniformToFill"></Image>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Отправитель" DisplayMemberBinding="{Binding Path=Msg.From}"/>
+                        <GridViewColumn Header="Тема" DisplayMemberBinding="{Binding Path=Msg.Subject}"/>
+                        <GridViewColumn Header="Время" DisplayMemberBinding="{Binding Path=Msg.Date}"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </Border>
+        
 
     </Grid>
 </Window>
