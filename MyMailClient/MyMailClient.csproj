@@ -85,9 +85,9 @@
     <Compile Include="Authorization.xaml.cs">
       <DependentUpon>Authorization.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CachedMessageInfo.cs" />
     <Compile Include="Cryptography.cs" />
     <Compile Include="CurrentData.cs" />
+    <Compile Include="HelpMimeMessage.cs" />
     <Compile Include="LetterWindow.xaml.cs">
       <DependentUpon>LetterWindow.xaml</DependentUpon>
     </Compile>

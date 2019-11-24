@@ -162,12 +162,9 @@ namespace MyMailClient
         {
             try
             {
-                //полная очистка ящика
-                CurrentData.curMail.deleteMailFolder();
-
                 // TODO: выполнять подключение и загрузку писем в отдельном потоке
                 if (CurrentData.curMail.ImapConnection())
-                    CurrentData.curMail.DownloadLetters();
+                    CurrentData.curMail.StartResync(); //CurrentData.curMail.DownloadLetters();////
                 else
                     Utility.MsgBox("Что-то помешало подключению данного почтового ящика! " +
                         "Будут отображены только письма, которые были синхронизированны во время " +
@@ -201,14 +198,17 @@ namespace MyMailClient
             {
                 TreeViewItem item = listOfFolders.SelectedItem as TreeViewItem;
 
-                string lastPath = Utility.strFromPanelWithIcon(item); ;
+                string lastPath = Utility.strFromPanelWithIcon(item);
+                lastPath = Utility.CutEndOfPathFolder(lastPath);
 
                 for (var i = Utility.GetParentItem(item); i != null; i = Utility.GetParentItem(i))
-                    lastPath = Utility.strFromPanelWithIcon(i) + "\\" + lastPath;
+                    lastPath = Utility.CutEndOfPathFolder(Utility.strFromPanelWithIcon(i)) + "\\" + lastPath;
 
                 string fullPath = Account.GetAccMailDir() + "\\" + CurrentData.curMail.Address + "\\" + lastPath;
 
-                List<MimeMessage> msg = CurrentData.curMail.DisplayLetters(fullPath);
+                List<HelpMimeMessage> msg = CurrentData.curMail.DisplayLetters(fullPath);
+
+                string[] clrmsg = System.IO.Directory.GetFiles(fullPath, "*.eml");
 
                 //listOfLetters.DataContext = msg;
                 listOfLetters.ItemsSource = msg;
@@ -217,7 +217,7 @@ namespace MyMailClient
 
         private void listOfLetters_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            CurrentData.curLetter = listOfLetters.SelectedItem as MimeMessage;
+            CurrentData.curLetter = (listOfLetters.SelectedItem as HelpMimeMessage).Msg;
             if (CurrentData.curLetter != null)
             {
                 LetterWindow lw = new LetterWindow();
@@ -236,7 +236,6 @@ namespace MyMailClient
             listOfFolders.Items.Clear();
             listOfLetters.ItemsSource = null;
         }
-
 
     }
 }
