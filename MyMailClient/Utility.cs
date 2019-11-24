@@ -75,9 +75,6 @@ namespace MyMailClient
             TextRange tr = new TextRange(ic.ContentStart, ic.ContentEnd);
             string str = tr.Text.Trim();
 
-            if (new Regex(@"^[A-Za-zА-Яа-я0-9-]+ \(\d+\)$").IsMatch(str))
-                str = str.Substring(0,str.Length - (str.Length - str.LastIndexOf(' ')));
-
             return str;
         }
 
@@ -88,6 +85,13 @@ namespace MyMailClient
                     return (TreeViewItem)i;
 
             return null;
+        }
+
+        public static string CutEndOfPathFolder(string str)
+        {
+            if (new Regex(@"^[A-Za-zА-Яа-я0-9- ]+ \(\d+\)$").IsMatch(str))
+                str = str.Substring(0, str.Length - (str.Length - str.LastIndexOf(' ')));
+            return str;
         }
     }
 }

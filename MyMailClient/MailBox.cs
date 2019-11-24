@@ -1,5 +1,6 @@
 ﻿using MailKit;
 using MailKit.Net.Imap;
+using MailKit.Net.Pop3;
 using MailKit.Search;
 using MimeKit;
 using System;
@@ -53,7 +54,11 @@ namespace MyMailClient
             try
             {
                 ImapDispose();
-                CurrentData.imap = new ImapClient();
+
+                if (!Directory.Exists("Logs"))
+                    Directory.CreateDirectory("Logs");
+
+                CurrentData.imap = new ImapClient(new ProtocolLogger("Logs\\imap.log"));
                 CurrentData.imap.Connect(IMAP_Dom, IMAP_Port, true);
                 CurrentData.imap.Authenticate(Address, Pass);
                 return true;
@@ -74,113 +79,128 @@ namespace MyMailClient
             }
         }
 
-
-
-        public void testDownloadLetters()
+        bool lettersCompare(MimeMessage msg1, MimeMessage msg2)
         {
-            IList<IMailFolder> folders = CurrentData.imap.GetFolders(CurrentData.imap.PersonalNamespaces.First());
-            List<string> names = folders.Select(t => t.FullName).ToList();
+            if (msg1.From.Mailboxes.First().Name != msg2.From.Mailboxes.First().Name)
+                return false;
 
-            foreach (var folder in folders)
+            if (msg1.From.Mailboxes.First().Address != msg2.From.Mailboxes.First().Address)
+                return false;
+
+            if (msg1.To.Mailboxes.First().Name != msg2.To.Mailboxes.First().Name)
+                return false;
+
+            if (msg1.To.Mailboxes.First().Address != msg2.To.Mailboxes.First().Address)
+                return false;
+
+            if (msg1.Cc.Count != msg2.Cc.Count)
             {
-                folder.Open(FolderAccess.ReadOnly);
-
-                string folderFullPath = Account.GetAccMailDir() + "\\" + Address + "\\" + folder.FullName.Replace('|', '\\');
-                //проверяем есть ли папка, в отрицательном случае - создаём папку
-                if (!Directory.Exists(folderFullPath))
-                    Directory.CreateDirectory(folderFullPath);
-
-                var uids = folder.Search(SearchQuery.All);
-
-                foreach (var uid in uids)
-                {
-                    var message = folder.GetMessage(uid);
-                    message.WriteTo(folderFullPath + "\\" + string.Format("{0}.eml", uid));
-                }
+                return false;
             }
+
+            for (int i = 0; i < msg1.Cc.Count; i++)
+            {
+                if (msg1.Cc[i].Name != msg2.Cc[i].Name)
+                    return false;
+            }
+
+            if (msg1.Subject != msg2.Subject)
+                return false;
+
+            if (msg1.Date != msg2.Date)
+                return false;
+
+            string body1 = msg1.HtmlBody ?? msg1.TextBody;
+            string body2 = msg2.HtmlBody ?? msg2.TextBody;
+
+            if (body1 != body2)
+                return false;
+
+            if (msg1.Attachments.Count() != msg2.Attachments.Count())
+                return false;
+
+            return true;
         }
 
-        public void testDownloadBodyParts(ImapFolder folder)
+        public void StartResync()
         {
-            var items = folder.Fetch(0, -1, MessageSummaryItems.UniqueId | MessageSummaryItems.Flags | MessageSummaryItems.Envelope | MessageSummaryItems.BodyStructure);
-            foreach (var item in items)
+            IList<IMailFolder> serverFolders = CurrentData.imap.GetFolders(CurrentData.imap.PersonalNamespaces.First());
+            //List<string> names = folders.Select(t => t.FullName).ToList();
+            //List<ImapFolder> serverFolders = new List<ImapFolder>();
+            //for (int i = 0; i < IserverFolders.Count; i++)
+            //{
+            //    serverFolders.Add(IserverFolders[i] as ImapFolder);
+            //}
+
+            if (!Directory.Exists(Account.GetAccMailDir() + "\\" + Address))
+                Directory.CreateDirectory(Account.GetAccMailDir() + "\\" + Address);
+
+            List<string> localFolders = Directory.GetDirectories(Account.GetAccMailDir() + "\\" + Address, "*.*", SearchOption.AllDirectories).ToList();
+
+
+            foreach (var serverFolder in serverFolders)
             {
-                var message = folder.GetMessage(item.UniqueId);
-                var temp = item.Flags.Value;
-                var bodyPart = item.TextBody;
-            }
-        }
+                var strlocfold = localFolders.Find(x => x.Contains(serverFolder.FullName.Replace('|', '\\').Replace('/', '\\')));
 
-        public void ResyncFolder(ImapFolder folder, List<CachedMessageInfo> cache, ref uint cachedUidValidity)
-        {
-            var items = folder.Fetch(0, -1, MessageSummaryItems.Full | MessageSummaryItems.UniqueId | MessageSummaryItems.Size | MessageSummaryItems.Flags | MessageSummaryItems.BodyStructure);
-            foreach (var item in items)
-            {
-                var message = folder.GetMessage(item.UniqueId);
-                var test = item.Envelope;
+                if (strlocfold != null)
+                    localFolders.Remove(strlocfold);
 
-                var temp = item.Flags.Value;
-                var bodyPart = item.TextBody;
-            }
+                string dirFullPath = Account.GetAccMailDir() + "\\" + Address + "\\" + serverFolder.FullName.Replace('|', '\\');
 
-            IList<IMessageSummary> summaries;
-
-            folder.Open(FolderAccess.ReadOnly);
-
-            if (cache.Count > 0)
-            {
-
-            }
-            else
-            {
-                cachedUidValidity = folder.UidValidity;
-            }
-        }
-
-
-
-
-
-        public void DownloadLetters()
-        {
-            //GetFolder - получает папку для указаного пространства имён
-            //PersonalNamespaces - Получаем пространство имён личных папок, 
-            //которое содержит личные папки почтового ящика пользователя.
-            DownloadFolder(CurrentData.imap.GetFolder(CurrentData.imap.PersonalNamespaces[0]) as ImapFolder);
-        }
-        private void DownloadFolder(ImapFolder folder)
-        {
-            //поиск под папок
-            foreach (ImapFolder subfolder in folder.GetSubfolders())
-                DownloadFolder(subfolder);
-
-            //Проверка на правильность папки (неправильные или ещё что-то)
-            if (folder.Attributes != FolderAttributes.None && (folder.Attributes & FolderAttributes.NonExistent) == 0)
-            {
-                //открываем папочку
-                folder.Open(FolderAccess.ReadOnly);
-                //прописываем для неё полный путь на диске
-                string dirFullPath = Account.GetAccMailDir() + "\\" + Address + "\\" + folder.FullName.Replace('|','\\');
-                //проверяем есть ли папка, в отрицательном случае - создаём папку
                 if (!Directory.Exists(dirFullPath))
                     Directory.CreateDirectory(dirFullPath);
-                //Получаем файлы на диске
-                List<string> files = Directory.EnumerateFiles(dirFullPath, "*.eml").OrderBy(filename => filename).ToList();
-                //Получаем последний файл, если такой есть
-                string last = files.Count > 0 ? files.Last().Substring(files.Last().LastIndexOf('\\') + 1) : "0";
-                //получаем просто имя последнего файла
-                last = System.IO.Path.GetFileNameWithoutExtension(last);
-                //Ищем письма в заданной области по uid (проверяем есть ли новые письма, которые не синхронизированны)
-                IList<UniqueId> uids = folder.Search(MailKit.Search.SearchQuery.Uids(
-                        new UniqueIdRange(new UniqueId(uint.Parse(last) + 1), UniqueId.MaxValue)));
-                //Докачиваем новые письма
-                foreach (UniqueId uid in uids)
+
+                if (serverFolder.FullName == "[Gmail]")
                 {
-                    MimeMessage message = folder.GetMessage(uid);
-                    message.WriteTo(System.IO.Path.Combine(dirFullPath, uid.ToString().PadLeft(15, '0') + ".eml"));
+                    continue;
                 }
-                folder.Close();
+                serverFolder.Open(FolderAccess.ReadOnly);
+
+                var serverLetters = serverFolder.Fetch(0, -1, MessageSummaryItems.UniqueId | MessageSummaryItems.Flags);
+
+                List<string> localLetters = Directory.GetFiles(dirFullPath, "*.eml").ToList();
+                //List<MimeMessage> localLetters = new List<MimeMessage>();
+                //foreach (var tempmsg in tempmsgs)
+                //localLetters.Add(MimeMessage.Load(tempmsg));
+                //localLetters.Reverse();
+
+                foreach (var serverLetter in serverLetters)
+                {
+                    var uniq = serverLetter.UniqueId;
+                    var flag = serverLetter.Flags.Value;
+                    var tempstr = uniq.ToString() + "_" + flag.ToString();
+
+                    var strloclet = localLetters.Find(x => x.Contains(tempstr));
+                    if (strloclet != null)
+                    {
+                        var servlet = serverFolder.GetMessage(uniq);
+                        var loclet = MimeMessage.Load(strloclet);
+
+                        if (lettersCompare(servlet, loclet))
+                        {
+                            localLetters.Remove(strloclet);
+                        }
+                        else
+                        {
+                            File.Delete(Path.Combine(dirFullPath, tempstr + ".eml"));
+                            servlet.WriteTo(Path.Combine(dirFullPath, tempstr + ".eml"));
+                        }
+                    }
+                    else
+                    {
+                        var servlet = serverFolder.GetMessage(uniq);
+                        servlet.WriteTo(Path.Combine(dirFullPath, tempstr + ".eml"));
+                    }
+                }
+                for (int i = 0; i < localLetters.Count; i++)
+                    File.Delete(localLetters[i]);
+                //ResyncFolder(folder, buf, folder.UidValidity);
+
+                serverFolder.Close();
             }
+
+            for (int i = 0; i < localFolders.Count; i++)
+                Directory.Delete(localFolders[i], true);
         }
 
         public List<TreeViewItem> DisplayFolders()
@@ -217,7 +237,7 @@ namespace MyMailClient
             string temp = (pathFile.Substring(pathFile.LastIndexOf('\\') + 1)) + (buf.Count > 0 ?
                     (" (" + buf.Count + ")") : "");
 
-            twi.Header = Utility.panelWithIcon("folder.png",temp);
+            twi.Header = Utility.panelWithIcon("folder.png", temp);
 
             foreach (string subdirPath in Directory.GetDirectories(pathFile))
                 twi.Items.Add(DisplayFolder(subdirPath));
@@ -247,14 +267,5 @@ namespace MyMailClient
             //}
             return buf;
         }
-
-        public void deleteMailFolder()
-        {
-            if (Directory.Exists(Account.GetAccMailDir() + "\\" + Address))
-            {
-                Directory.Delete(Account.GetAccMailDir() + "\\" + Address, true);
-            }
-        }
-
     }
 }
