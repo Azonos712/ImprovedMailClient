@@ -1,0 +1,89 @@
+﻿<Window x:Class="MyMailClient.WriteLetterWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ex="clr-namespace:Smith.WPF.HtmlEditor;assembly=Smith.WPF.HtmlEditor"
+        xmlns:local="clr-namespace:MyMailClient"
+        mc:Ignorable="d"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="14"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        Title="Написание письма" Height="620" Width="750" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+    <Window.Resources>
+        <Style x:Key="flushStyle">
+            <Setter Property="ToolBar.Background">
+                <Setter.Value>
+                    <ImageBrush Opacity="1"></ImageBrush>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    
+    <Grid>
+        <DockPanel>
+            <Grid DockPanel.Dock="Top" Margin="8">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="120" />
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Label Content="Отправитель:" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <DockPanel Grid.Column="1" x:Name="fromToDatetimeLabel" VerticalAlignment="Stretch" Margin="0,1,0,1">
+                    <TextBox DockPanel.Dock="Left" x:Name="senderNameTB" BorderThickness="1,1,0,1"/>
+                    <TextBox x:Name="sendetAddressTB" HorizontalAlignment="Stretch" IsReadOnly="True" BorderThickness="0,1,1,1"/>
+                </DockPanel>
+                <Label Grid.Row="1" Content="Получатели:" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <TextBox Grid.Row="1" Grid.Column="1" x:Name="recipientsTB" Margin="0,1,0,1"/>
+                <Label Grid.Row="2" Content="Копии:" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <TextBox Grid.Row="2" Grid.Column="1" x:Name="recipientsCcTB" Margin="0,1,0,1"/>
+                <Label Grid.Row="3" Content="Скрытые копии:" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <TextBox Grid.Row="3" Grid.Column="1" x:Name="recipientsBccTB" Margin="0,1,0,1"/>
+                <Label Grid.Row="4" Content="Тема:" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <TextBox Grid.Row="4" Grid.Column="1" x:Name="subjectTB" Margin="0,1,0,1"/>
+                <CheckBox x:Name="chbx_encrypt" Grid.Row="5" Content="Шифрование" HorizontalAlignment="Right" VerticalAlignment="Center" FlowDirection="RightToLeft" Margin="0,0,4,0" Unchecked="chbx_encrypt_Unchecked"/>
+                <ComboBox x:Name="cmbx_encryption" Grid.Row="5" Grid.Column="1" Margin="0,1,0,1" SelectionChanged="cmbx_encryption_SelectionChanged"/>
+                <CheckBox x:Name="chbx_sign" Grid.Row="6" Content="Подпись" HorizontalAlignment="Right" VerticalAlignment="Center" FlowDirection="RightToLeft" Margin="0,0,4,0" Unchecked="chbx_sign_Unchecked"/>
+                <ComboBox x:Name="cmbx_sign" Grid.Row="6" Grid.Column="1" Margin="0,1,0,1" SelectionChanged="cmbx_sign_SelectionChanged"/>
+            </Grid>
+            <Border DockPanel.Dock="Bottom" BorderBrush="#FF828790" BorderThickness="0,1,0,0" Padding="8">
+                <Grid MinHeight="32">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="120"/>
+                        <ColumnDefinition Width="120"/>
+                    </Grid.ColumnDefinitions>
+                    <ItemsControl x:Name="attachmentsPanel">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" Margin="0,0,8,0">
+                                    <TextBlock Text="{Binding DisplayName}"/>
+                                    <!--<local:AutoGreyableImage Source="Resources/remove_small.png" MouseLeftButtonUp="removeAttachmentBtn_MouseLeftButtonUp" Cursor="Hand" Width="16" Height="16" Margin="2,0,0,0"/>-->
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                    <Button x:Name="btn_attach" Grid.Column="1" Content="Прикрепить файл" VerticalAlignment="Stretch" Margin="4,0,0,0" Click="btn_attach_Click"/>
+                    <Button x:Name="btn_send" Grid.Column="2" Content="Отправить" VerticalAlignment="Stretch" Margin="4,0,0,0" Click="btn_send_Click"/>
+                </Grid>
+            </Border>
+            <ex:HtmlEditor x:Name="bodyHtmlEditor" Style="{StaticResource flushStyle}">
+
+            </ex:HtmlEditor>
+        </DockPanel>
+    </Grid>
+</Window>

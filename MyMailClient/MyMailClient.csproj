@@ -102,6 +102,9 @@
     <Compile Include="WriteLetter.xaml.cs">
       <DependentUpon>WriteLetter.xaml</DependentUpon>
     </Compile>
+    <Compile Include="WriteLetterWindow.xaml.cs">
+      <DependentUpon>WriteLetterWindow.xaml</DependentUpon>
+    </Compile>
     <Page Include="Authorization.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -131,6 +134,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="WriteLetter.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WriteLetterWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -178,6 +185,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\smithhtmleditor\SmithHtmlEditor\SmithHtmlEditor.csproj">
+      <Project>{84badda1-ab3a-4064-b87e-178d7446901d}</Project>
+      <Name>SmithHtmlEditor</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

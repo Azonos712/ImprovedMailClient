@@ -282,7 +282,9 @@ namespace MyMailClient
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-
+            WriteLetterWindow wlw = new WriteLetterWindow();
+            wlw.ShowDialog();
+            this.Focus();
         }
     }
 }

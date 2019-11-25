@@ -8,7 +8,7 @@
         TextElement.FontWeight="Regular"
         TextElement.FontSize="14"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        Title="Мой почтовый клиент" Height="620" Width="750" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+        Title="Прочтение письма" Height="620" Width="750" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
     <Grid>
 
         <Label Width="100" HorizontalContentAlignment="Right" Content="Отправитель:" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10 10 0 0"/>
@@ -40,7 +40,7 @@
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
         </ItemsControl>
-        <Button x:Name="btn_reply" Width="100" Height="30" HorizontalAlignment="Center" VerticalAlignment="Top" Content="Ответить" Margin="575 530 0 0"/>
+        <Button x:Name="btn_reply" Width="100" Height="30" HorizontalAlignment="Center" VerticalAlignment="Top" Content="Ответить" Margin="575 530 0 0" Click="btn_reply_Click"/>
 
     </Grid>
 </Window>
