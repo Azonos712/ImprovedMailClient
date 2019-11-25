@@ -307,6 +307,7 @@ namespace MyMailClient
         }
     }
 
+
     [SuppressUnmanagedCodeSecurity]
     internal static class NativeMethods
     {
@@ -329,4 +330,6 @@ namespace MyMailClient
             return NativeMethods.StrCmpLogicalW(a.Name, b.Name);
         }
     }
+
+
 }

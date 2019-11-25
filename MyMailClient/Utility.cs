@@ -93,5 +93,22 @@ namespace MyMailClient
                 str = str.Substring(0, str.Length - (str.Length - str.LastIndexOf(' ')));
             return str;
         }
+
+        public static void SaveAttachment(MimeKit.MimeEntity attachment, string filepath)
+        {
+            using (var stream = System.IO.File.Create(filepath))
+            {
+                if (attachment is MimeKit.MessagePart)
+                {
+                    var rfc822 = (MimeKit.MessagePart)attachment;
+                    rfc822.Message.WriteTo(stream);
+                }
+                else
+                {
+                    var part = (MimeKit.MimePart)attachment;
+                    part.Content.DecodeTo(stream);
+                }
+            }
+        }
     }
 }

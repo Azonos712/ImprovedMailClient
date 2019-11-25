@@ -1,4 +1,5 @@
-﻿using MimeKit;
+﻿using Microsoft.Win32;
+using MimeKit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -158,5 +159,16 @@ namespace MyMailClient
             //replyBtn.IsEnabled = true;
 
         }
+
+        private void TextBlock_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            MimeEntity attachment = (sender as FrameworkElement).DataContext as MimeEntity;
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Title = "Сохранить файл...";
+            sfd.FileName = attachment.ContentDisposition?.FileName ?? attachment.ContentType.Name;
+            if (sfd.ShowDialog(this).Value)
+                Utility.SaveAttachment(attachment, sfd.FileName);
+        }
+
     }
 }
