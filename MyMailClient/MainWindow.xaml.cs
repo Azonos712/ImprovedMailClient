@@ -177,21 +177,6 @@ namespace MyMailClient
             }
         }
 
-        //private void listOfLetters_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        //{
-        //    MimeMessage message = listOfFolders.SelectedItem as MimeMessage;
-
-        //    if (message != null)
-        //    {
-        //        // TODO: добавить флаг "прочитано"
-        //        //showLetter(message);
-        //    }
-        //}
-
-        //private void listOfLetters_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        //{
-        //}
-
         private void listOfFolders_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             if (listOfFolders.SelectedItem != null)
@@ -241,7 +226,7 @@ namespace MyMailClient
             if (CurrentData.curLetter != null)
             {
                 LetterWindow lw = new LetterWindow();
-                lw.ShowDialog();
+                lw.Show();
 
                 TreeViewItem item = listOfFolders.SelectedItem as TreeViewItem;
                 string fullfolderPath = Utility.strFromPanelWithIcon(item);

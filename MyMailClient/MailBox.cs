@@ -7,6 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Security;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media.Imaging;
@@ -230,17 +232,17 @@ namespace MyMailClient
             TreeViewItem twi = new TreeViewItem();
 
             string[] messages = Directory.GetFiles(pathFile, "*.eml");
-            List<MimeMessage> buf = new List<MimeMessage>();
-            foreach (string message in messages)
-                buf.Add(MimeMessage.Load(message));
+            //List<MimeMessage> buf = new List<MimeMessage>();
+            //foreach (string message in messages)
+            //    buf.Add(MimeMessage.Load(message));
             //buf.Reverse();
             //foreach (MimeMessage message in buf)
             //{
             //    twi.Items.Add(message);
             //}
 
-            string temp = (pathFile.Substring(pathFile.LastIndexOf('\\') + 1)) + (buf.Count > 0 ?
-                    (" (" + buf.Count + ")") : "");
+            string temp = (pathFile.Substring(pathFile.LastIndexOf('\\') + 1)) + (messages.Length > 0 ?
+                    (" (" + messages.Length + ")") : "");
 
             twi.Header = Utility.panelWithIcon("folder.png", temp);
 
@@ -252,7 +254,9 @@ namespace MyMailClient
 
         public List<HelpMimeMessage> DisplayLetters(string pathFolder)
         {
-            string[] messages = Directory.GetFiles(pathFolder, "*.eml");
+            //string[] messages = Directory.GetFiles(pathFolder, "*.eml");
+            List<string> messages = Directory.GetFiles(pathFolder, "*.eml").ToList();
+            messages.Sort(new NaturalStringComparer());
 
             List<HelpMimeMessage> buf = new List<HelpMimeMessage>();
 
@@ -300,6 +304,29 @@ namespace MyMailClient
                     File.Move(fullLetterPath, newFullLetterPath);
                 }
             }
+        }
+    }
+
+    [SuppressUnmanagedCodeSecurity]
+    internal static class NativeMethods
+    {
+        [DllImport("shlwapi.dll", CharSet = CharSet.Unicode)]
+        public static extern int StrCmpLogicalW(string psz1, string psz2);
+    }
+
+    public sealed class NaturalStringComparer : IComparer<string>
+    {
+        public int Compare(string a, string b)
+        {
+            return NativeMethods.StrCmpLogicalW(a, b);
+        }
+    }
+
+    public sealed class NaturalFileInfoNameComparer : IComparer<FileInfo>
+    {
+        public int Compare(FileInfo a, FileInfo b)
+        {
+            return NativeMethods.StrCmpLogicalW(a.Name, b.Name);
         }
     }
 }
