@@ -60,17 +60,6 @@ namespace MyMailClient
             {
                 Utility.MsgBox(ex.Message, "Ошибка", mailWin);
             }
-
-            //string address = mw.addressTB.Text.Trim();
-            //if (!account.mailboxes.Any(item => item.Address.Equals(address)))
-            //{
-            //    account.mailboxes.Add(mw.mailbox);
-            //    account.Serialize();
-            //}
-            //else
-            //{
-            //    Utils.ShowWarning(address + " уже есть в списке почтовых ящиков");
-            //}
         }
 
         private void Validation()

@@ -196,23 +196,43 @@ namespace MyMailClient
         {
             if (listOfFolders.SelectedItem != null)
             {
-                TreeViewItem item = listOfFolders.SelectedItem as TreeViewItem;
+                refreshListOfLetters();
+                //TreeViewItem item = listOfFolders.SelectedItem as TreeViewItem;
 
-                string lastPath = Utility.strFromPanelWithIcon(item);
-                lastPath = Utility.CutEndOfPathFolder(lastPath);
+                //string lastPath = Utility.strFromPanelWithIcon(item);
+                //lastPath = Utility.CutEndOfPathFolder(lastPath);
 
-                for (var i = Utility.GetParentItem(item); i != null; i = Utility.GetParentItem(i))
-                    lastPath = Utility.CutEndOfPathFolder(Utility.strFromPanelWithIcon(i)) + "\\" + lastPath;
+                //for (var i = Utility.GetParentItem(item); i != null; i = Utility.GetParentItem(i))
+                //    lastPath = Utility.CutEndOfPathFolder(Utility.strFromPanelWithIcon(i)) + "\\" + lastPath;
 
-                string fullPath = Account.GetAccMailDir() + "\\" + CurrentData.curMail.Address + "\\" + lastPath;
+                //string fullPath = Account.GetAccMailDir() + "\\" + CurrentData.curMail.Address + "\\" + lastPath;
 
-                List<HelpMimeMessage> msg = CurrentData.curMail.DisplayLetters(fullPath);
+                //List<HelpMimeMessage> msg = CurrentData.curMail.DisplayLetters(fullPath);
 
-                string[] clrmsg = System.IO.Directory.GetFiles(fullPath, "*.eml");
+                //string[] clrmsg = System.IO.Directory.GetFiles(fullPath, "*.eml");
 
-                //listOfLetters.DataContext = msg;
-                listOfLetters.ItemsSource = msg;
+                ////listOfLetters.DataContext = msg;
+                //listOfLetters.ItemsSource = msg;
             }
+        }
+
+        void refreshListOfLetters()
+        {
+            TreeViewItem item = listOfFolders.SelectedItem as TreeViewItem;
+
+            string lastPath = Utility.strFromPanelWithIcon(item);
+            lastPath = Utility.CutEndOfPathFolder(lastPath);
+            for (var i = Utility.GetParentItem(item); i != null; i = Utility.GetParentItem(i))
+                lastPath = Utility.CutEndOfPathFolder(Utility.strFromPanelWithIcon(i)) + "\\" + lastPath;
+
+            string fullPath = Account.GetAccMailDir() + "\\" + CurrentData.curMail.Address + "\\" + lastPath;
+
+            List<HelpMimeMessage> msg = CurrentData.curMail.DisplayLetters(fullPath);
+
+            //string[] clrmsg = System.IO.Directory.GetFiles(fullPath, "*.eml");
+
+            //listOfLetters.DataContext = msg;
+            listOfLetters.ItemsSource = msg;
         }
 
         private void listOfLetters_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -222,13 +242,51 @@ namespace MyMailClient
             {
                 LetterWindow lw = new LetterWindow();
                 lw.ShowDialog();
+
+                TreeViewItem item = listOfFolders.SelectedItem as TreeViewItem;
+                string fullfolderPath = Utility.strFromPanelWithIcon(item);
+                fullfolderPath = Utility.CutEndOfPathFolder(fullfolderPath);
+                for (var i = Utility.GetParentItem(item); i != null; i = Utility.GetParentItem(i))
+                    fullfolderPath = Utility.CutEndOfPathFolder(Utility.strFromPanelWithIcon(i)) + "\\" + fullfolderPath;
+
+                CurrentData.curMail.markLetter((listOfLetters.SelectedItem as HelpMimeMessage).FullPath, fullfolderPath);
+
+                refreshListOfLetters();
+                //string fullLetterPath = (listOfLetters.SelectedItem as HelpMimeMessage).FullPath;
+                //string letterName = new System.IO.FileInfo(fullLetterPath).Name;
+                //if (!letterName.Contains("Seen"))
+                //{
+                //    if ((CurrentData.curMail.ImapConnection()))
+                //    {
+
+                //        var uid_flag = letterName.Split('_');
+
+                //        TreeViewItem item = listOfFolders.SelectedItem as TreeViewItem;
+                //        string folderPath = Utility.strFromPanelWithIcon(item);
+                //        folderPath = Utility.CutEndOfPathFolder(folderPath);
+                //        for (var i = Utility.GetParentItem(item); i != null; i = Utility.GetParentItem(i))
+                //            folderPath = Utility.CutEndOfPathFolder(Utility.strFromPanelWithIcon(i)) + "\\" + folderPath;
+
+
+
+                //        var serverFolder = CurrentData.imap.GetFolder(folderPath);
+
+                //        serverFolder.Open(MailKit.FolderAccess.ReadWrite);
+
+                //        serverFolder.AddFlags(Convert.ToInt32(uid_flag[0]), MailKit.MessageFlags.Seen, true);
+
+                //        var serverLetter = serverFolder.Fetch(Convert.ToInt32(uid_flag[0]), -1, MailKit.MessageSummaryItems.UniqueId | MailKit.MessageSummaryItems.Flags);
+
+                //        string newLetterName = serverLetter[0].UniqueId.ToString() + "_" + serverLetter[0].Flags.Value.ToString();
+
+                //        //переписать новое письмо
+                //        refreshListOfLetters();
+                //    }
+                //}
+
+
             }
-            this.Focus();
-            //    if (message != null)
-            //    {
-            //        // TODO: добавить флаг "прочитано"
-            //        //showLetter(message);
-            //    }
+            //this.Focus();
         }
 
         void clearLetFol()
@@ -237,5 +295,9 @@ namespace MyMailClient
             listOfLetters.ItemsSource = null;
         }
 
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

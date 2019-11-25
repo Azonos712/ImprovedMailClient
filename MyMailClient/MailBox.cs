@@ -58,6 +58,9 @@ namespace MyMailClient
                 if (!Directory.Exists("Logs"))
                     Directory.CreateDirectory("Logs");
 
+                if (File.Exists("Logs\\imap.log"))
+                    File.Delete("Logs\\imap.log");
+
                 CurrentData.imap = new ImapClient(new ProtocolLogger("Logs\\imap.log"));
                 CurrentData.imap.Connect(IMAP_Dom, IMAP_Port, true);
                 CurrentData.imap.Authenticate(Address, Pass);
@@ -137,7 +140,6 @@ namespace MyMailClient
 
             List<string> localFolders = Directory.GetDirectories(Account.GetAccMailDir() + "\\" + Address, "*.*", SearchOption.AllDirectories).ToList();
 
-
             foreach (var serverFolder in serverFolders)
             {
                 var strlocfold = localFolders.Find(x => x.Contains(serverFolder.FullName.Replace('|', '\\').Replace('/', '\\')));
@@ -159,10 +161,6 @@ namespace MyMailClient
                 var serverLetters = serverFolder.Fetch(0, -1, MessageSummaryItems.UniqueId | MessageSummaryItems.Flags);
 
                 List<string> localLetters = Directory.GetFiles(dirFullPath, "*.eml").ToList();
-                //List<MimeMessage> localLetters = new List<MimeMessage>();
-                //foreach (var tempmsg in tempmsgs)
-                //localLetters.Add(MimeMessage.Load(tempmsg));
-                //localLetters.Reverse();
 
                 foreach (var serverLetter in serverLetters)
                 {
@@ -170,21 +168,28 @@ namespace MyMailClient
                     var flag = serverLetter.Flags.Value;
                     var tempstr = uniq.ToString() + "_" + flag.ToString();
 
-                    var strloclet = localLetters.Find(x => x.Contains(tempstr));
+                    var strloclet = localLetters.Find(x => x.Contains(uniq.ToString()));
                     if (strloclet != null)
                     {
-                        var servlet = serverFolder.GetMessage(uniq);
-                        var loclet = MimeMessage.Load(strloclet);
+                        if (!strloclet.Contains(flag.ToString()))
+                        {
+                            string newstrlocletflag = (strloclet.Substring(0, strloclet.LastIndexOf("\\") + 1) + tempstr + ".eml");
 
-                        if (lettersCompare(servlet, loclet))
-                        {
+                            File.Move(strloclet, newstrlocletflag);
+                        }
+
+                        //var servlet = serverFolder.GetMessage(uniq);
+                        //var loclet = MimeMessage.Load(strloclet);
+
+                        //if (lettersCompare(servlet, loclet))
+                        //{
                             localLetters.Remove(strloclet);
-                        }
-                        else
-                        {
-                            File.Delete(Path.Combine(dirFullPath, tempstr + ".eml"));
-                            servlet.WriteTo(Path.Combine(dirFullPath, tempstr + ".eml"));
-                        }
+                        //}
+                        //else
+                        //{
+                        //    File.Delete(Path.Combine(dirFullPath, tempstr + ".eml"));
+                        //    servlet.WriteTo(Path.Combine(dirFullPath, tempstr + ".eml"));
+                        //}
                     }
                     else
                     {
@@ -257,13 +262,44 @@ namespace MyMailClient
                 temp.Msg = MimeMessage.Load(message);
                 temp.SeenFlag = message.Contains("Seen") ? true : false;
                 temp.Seen = message.Contains("Seen") ? new FileInfo("Resources\\empty_mail.png").FullName : new FileInfo("Resources\\full_mail.png").FullName;
-
+                temp.FullPath = message;
                 buf.Add(temp);
             }
 
             buf.Reverse();
 
             return buf;
+        }
+
+        public void markLetter(string fullLetterPath, string fullfolderPath)
+        {
+            string letterName = new FileInfo(fullLetterPath).Name;
+            if (!letterName.Contains("Seen"))
+            {
+                if ((CurrentData.curMail.ImapConnection()))
+                {
+                    var uid_flag = letterName.Split('_');
+
+                    var serverFolder = CurrentData.imap.GetFolder(fullfolderPath);
+                    
+
+                    serverFolder.Open(FolderAccess.ReadWrite);
+                    var uids = serverFolder.Fetch(Convert.ToInt32(uid_flag[0]) - 1, -1, MessageSummaryItems.UniqueId | MessageSummaryItems.Flags);
+
+                    serverFolder.AddFlags(uids[0].UniqueId, MessageFlags.Seen, true);
+                    //serverFolder.SetFlags(Convert.ToInt32(uid_flag[0]) - 1, MessageFlags.Seen, true);
+
+                    var serverLetter = serverFolder.Fetch((int)uids[0].UniqueId.Id-1, -1, MessageSummaryItems.UniqueId | MessageSummaryItems.Flags);
+                    
+                    serverFolder.Close();
+                    ImapDispose();
+                    string newLetterName = serverLetter[0].UniqueId.ToString() + "_" + serverLetter[0].Flags.Value.ToString();
+
+                    string newFullLetterPath = fullLetterPath.Substring(0, fullLetterPath.LastIndexOf("\\")+1) + newLetterName + ".eml";
+
+                    File.Move(fullLetterPath, newFullLetterPath);
+                }
+            }
         }
     }
 }
