@@ -163,6 +163,12 @@ namespace MyMailClient
                 var serverLetters = serverFolder.Fetch(0, -1, MessageSummaryItems.UniqueId | MessageSummaryItems.Flags);
 
                 List<string> localLetters = Directory.GetFiles(dirFullPath, "*.eml").ToList();
+                List<uint> UIDlocalLetters = new List<uint>();
+                foreach (var x in localLetters)
+                {
+                    var temp = x.Substring(x.LastIndexOf("\\") + 1, x.LastIndexOf("_") - x.LastIndexOf("\\") - 1);
+                    UIDlocalLetters.Add(Convert.ToUInt32(temp));
+                }
 
                 foreach (var serverLetter in serverLetters)
                 {
@@ -170,9 +176,18 @@ namespace MyMailClient
                     var flag = serverLetter.Flags.Value;
                     var tempstr = uniq.ToString() + "_" + flag.ToString();
 
-                    var strloclet = localLetters.Find(x => x.Contains(uniq.ToString()));
-                    if (strloclet != null)
+                    //foreach(localLetter)
+                    //localLetters.
+                    //List<string> templocalLetters = new List<string>(localLetters);
+                    //localLetters.ForEach(x =>x.Substring(x.LastIndexOf("\\"),x.LastIndexOf("_")- x.LastIndexOf("\\")));
+                    
+                    int index = UIDlocalLetters.FindIndex(x => x == uniq.Id);
+
+                    //var strloclet = localLetters.Find(x => x.Contains(uniq.ToString()));
+                    //if (strloclet != null)
+                    if(index!=-1)
                     {
+                        var strloclet = localLetters[index];
                         if (!strloclet.Contains(flag.ToString()))
                         {
                             string newstrlocletflag = (strloclet.Substring(0, strloclet.LastIndexOf("\\") + 1) + tempstr + ".eml");
@@ -185,7 +200,8 @@ namespace MyMailClient
 
                         //if (lettersCompare(servlet, loclet))
                         //{
-                            localLetters.Remove(strloclet);
+                        localLetters.Remove(strloclet);
+                        UIDlocalLetters.RemoveAt(index);
                         //}
                         //else
                         //{

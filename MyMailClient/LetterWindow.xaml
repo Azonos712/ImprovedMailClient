@@ -10,37 +10,59 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         Title="Прочтение письма" Height="620" Width="750" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
     <Grid>
+        <DockPanel>
+            <Grid DockPanel.Dock="Top" Margin="8">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="120" />
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                
+                <Label Grid.Row="0" Grid.Column="0" HorizontalContentAlignment="Right" Content="Отправитель:"/>
+                <Label Grid.Row="1" Grid.Column="0" HorizontalContentAlignment="Right" Content="Тема:"/>
+                <Label Grid.Row="2" Grid.Column="0" HorizontalContentAlignment="Right" Content="Дата и время:"/>
+                <Label Grid.Row="3" Grid.Column="0" HorizontalContentAlignment="Right" Content="Шифрование:"/>
+                <Label Grid.Row="4" Grid.Column="0" HorizontalContentAlignment="Right" Content="Подпись:"/>
 
-        <Label Width="100" HorizontalContentAlignment="Right" Content="Отправитель:" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10 10 0 0"/>
-        <Label Width="100" HorizontalContentAlignment="Right" Content="Тема:" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10 40 0 0"/>
-        <Label Width="100" HorizontalContentAlignment="Right" Content="Дата и время:" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10 70 0 0"/>
-        <Label Width="100" HorizontalContentAlignment="Right" Content="Шифрование:" Grid.Column="1" Grid.Row="1" Grid.RowSpan="3" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10 100 0 0"/>
-        <Label Width="100" HorizontalContentAlignment="Right" Content="Подпись:" Grid.Column="1" Grid.Row="1" Grid.RowSpan="3" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10 130 0 0"/>
-
-        <Label x:Name="lbl_send" Width="570" Content="..." Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="110 10 0 0"/>
-        <Label x:Name="lbl_subj" Width="570" Content="..." Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="110 40 0 0"/>
-        <Label x:Name="lbl_date" Width="570" Content="..." Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="110 70 0 0"/>
-        <Label x:Name="lbl_encr" Width="570" Content="..." Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="110 100 0 0"/>
-        <Label x:Name="lbl_ecp" Width="570" Content="..." Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="110 130 0 0"/>
-
-
-        <Border Grid.Column="1" Grid.Row="2" BorderBrush="Blue" BorderThickness="0.9"  Height="350" Width="675" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,70">
-            <WebBrowser x:Name="wbBrwsr" Height="340" Width="665" HorizontalAlignment="Center" VerticalAlignment="Center"></WebBrowser>
-        </Border>
-
-        <ItemsControl x:Name="attachPanel" Margin="0,530,105,0" HorizontalAlignment="Center" BorderBrush="Blue" BorderThickness="1" VerticalAlignment="Top" Width="571" Height="30">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock TextAlignment="Center" Text="{Binding FileName}" Foreground="Blue" TextDecorations="Underline" MouseLeftButtonUp="TextBlock_MouseLeftButtonUp" Margin="0,0,4,0" Cursor="Hand"/>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <WrapPanel/>
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-        </ItemsControl>
-        <Button x:Name="btn_reply" Width="100" Height="30" HorizontalAlignment="Center" VerticalAlignment="Top" Content="Ответить" Margin="575 530 0 0" Click="btn_reply_Click"/>
-
+                <Label Grid.Row="0" Grid.Column="1" x:Name="lbl_send" Content="..."/>
+                <Label Grid.Row="1" Grid.Column="1" x:Name="lbl_subj" Content="..."/>
+                <Label Grid.Row="2" Grid.Column="1" x:Name="lbl_date" Content="..."/>
+                <Label Grid.Row="3" Grid.Column="1" x:Name="lbl_encr" Content="..."/>
+                <Label Grid.Row="4" Grid.Column="1" x:Name="lbl_ecp"  Content="..."/>
+            </Grid>
+            <Border DockPanel.Dock="Bottom"  BorderBrush="#FF828790" BorderThickness="0,0,0,0"  Padding="10">
+                <Grid MinHeight="32">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="165"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <ItemsControl Grid.Column="0" x:Name="attachPanel" BorderBrush="Blue" BorderThickness="1">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock TextAlignment="Center" Text="{Binding FileName}" Foreground="Blue" TextDecorations="Underline" MouseLeftButtonUp="TextBlock_MouseLeftButtonUp" Margin="0,0,4,0" Cursor="Hand"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                    <Button Grid.Column="1" x:Name="btn_reply" Margin="5" Content="Ответить" Click="btn_reply_Click"/>
+                </Grid>
+            </Border>
+            
+            <Border BorderBrush="Blue" BorderThickness="0.9" Margin="10">
+                <WebBrowser x:Name="wbBrwsr" Margin="10"></WebBrowser>
+            </Border>
+        </DockPanel>
     </Grid>
 </Window>

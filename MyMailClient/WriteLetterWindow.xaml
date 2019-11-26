@@ -62,12 +62,12 @@
                         <ColumnDefinition Width="120"/>
                         <ColumnDefinition Width="120"/>
                     </Grid.ColumnDefinitions>
-                    <ItemsControl x:Name="attachmentsPanel">
+                    <ItemsControl BorderBrush="Blue" BorderThickness="1" x:Name="attachmentsPanel">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" Margin="0,0,8,0">
-                                    <TextBlock Text="{Binding DisplayName}"/>
-                                    <!--<local:AutoGreyableImage Source="Resources/remove_small.png" MouseLeftButtonUp="removeAttachmentBtn_MouseLeftButtonUp" Cursor="Hand" Width="16" Height="16" Margin="2,0,0,0"/>-->
+                                    <TextBlock Text="{Binding Name}"/>
+                                    <Image Source="MyMailClinet/Resources/remove.png" MouseLeftButtonUp="Image_MouseLeftButtonUp" Cursor="Hand" Width="16" Height="16" Margin="2,0,0,0"/>
                                 </StackPanel>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
