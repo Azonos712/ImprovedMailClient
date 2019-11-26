@@ -282,6 +282,12 @@ namespace MyMailClient
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            if (CurrentData.curMail == null)
+            {
+                Utility.MsgBox("Вам стоит выбрать почтовый ящик!", "Уведомление", this);
+                return;
+            }
+
             WriteLetterWindow wlw = new WriteLetterWindow();
             wlw.ShowDialog();
             this.Focus();
