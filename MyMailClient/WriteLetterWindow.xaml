@@ -9,7 +9,7 @@
         TextElement.FontWeight="Regular"
         TextElement.FontSize="14"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        Title="Написание письма" Height="620" Width="750" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+        Title="Написание письма" Height="620" Width="750" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" x:Name="writeLetterWnd">
     <Window.Resources>
         <Style x:Key="flushStyle">
             <Setter Property="ToolBar.Background">
@@ -22,11 +22,11 @@
     
     <Grid>
         <DockPanel>
+            
             <Grid DockPanel.Dock="Top" Margin="8">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="1*"/>
                     <RowDefinition Height="30"/>
                     <RowDefinition Height="30"/>
                     <RowDefinition Height="30"/>
@@ -39,22 +39,39 @@
                 </Grid.ColumnDefinitions>
                 <Label Content="Отправитель:" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                 <DockPanel Grid.Column="1" x:Name="fromToDatetimeLabel" VerticalAlignment="Stretch" Margin="0,1,0,1">
-                    <TextBox DockPanel.Dock="Left" x:Name="senderNameTB" BorderThickness="1,1,0,1"/>
-                    <TextBox x:Name="sendetAddressTB" HorizontalAlignment="Stretch" IsReadOnly="True" BorderThickness="0,1,1,1"/>
+                    <TextBox DockPanel.Dock="Left" x:Name="txt_namefrom" BorderThickness="1,1,0,1"/>
+                    <TextBox x:Name="txt_addressfrom" HorizontalAlignment="Stretch" IsReadOnly="True" BorderThickness="0,1,1,1"/>
                 </DockPanel>
                 <Label Grid.Row="1" Content="Получатели:" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                <TextBox Grid.Row="1" Grid.Column="1" x:Name="recipientsTB" Margin="0,1,0,1"/>
-                <Label Grid.Row="2" Content="Копии:" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                <TextBox Grid.Row="2" Grid.Column="1" x:Name="recipientsCcTB" Margin="0,1,0,1"/>
-                <Label Grid.Row="3" Content="Скрытые копии:" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                <TextBox Grid.Row="3" Grid.Column="1" x:Name="recipientsBccTB" Margin="0,1,0,1"/>
-                <Label Grid.Row="4" Content="Тема:" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                <TextBox Grid.Row="4" Grid.Column="1" x:Name="subjectTB" Margin="0,1,0,1"/>
-                <CheckBox x:Name="chbx_encrypt" Grid.Row="5" Content="Шифрование" HorizontalAlignment="Right" VerticalAlignment="Center" FlowDirection="RightToLeft" Margin="0,0,4,0" Unchecked="chbx_encrypt_Unchecked"/>
-                <ComboBox x:Name="cmbx_encryption" Grid.Row="5" Grid.Column="1" Margin="0,1,0,1" SelectionChanged="cmbx_encryption_SelectionChanged"/>
-                <CheckBox x:Name="chbx_sign" Grid.Row="6" Content="Подпись" HorizontalAlignment="Right" VerticalAlignment="Center" FlowDirection="RightToLeft" Margin="0,0,4,0" Unchecked="chbx_sign_Unchecked"/>
-                <ComboBox x:Name="cmbx_sign" Grid.Row="6" Grid.Column="1" Margin="0,1,0,1" SelectionChanged="cmbx_sign_SelectionChanged"/>
+                <WrapPanel x:Name="wrp_Addresses" Grid.Row="1" Grid.Column="1" Margin="0 1 0 1">
+                    <materialDesign:Chip Content="Example Chip" IsDeletable="True" Margin="2"></materialDesign:Chip>
+                    <materialDesign:Chip Content="Example Chip" IsDeletable="True" Margin="2"></materialDesign:Chip>
+                    <materialDesign:Chip Content="Example Chip" IsDeletable="True" Margin="2"></materialDesign:Chip>
+                        <materialDesign:Chip Content="Example Chip" IsDeletable="True" Margin="2"></materialDesign:Chip>
+                        <materialDesign:Chip Content="Example Chip" IsDeletable="True" Margin="2"></materialDesign:Chip>
+                        <materialDesign:Chip Content="Example Chip" IsDeletable="True" Margin="2"></materialDesign:Chip>
+                    <materialDesign:Chip Content="Example Chip" IsDeletable="True" Margin="2"></materialDesign:Chip>
+                </WrapPanel>
+                <Label Grid.Row="2" Content="Добавить:" HorizontalAlignment="Right"/>
+                <DockPanel Grid.Row="2" Grid.Column="1">
+                    <TextBox Text="Hello" MinWidth="150" Margin="2"></TextBox>
+                    <Button x:Name="btn_addAddress" Click="btn_addAddress_Click" HorizontalAlignment="Left" Height="25" Width="25" Margin="2" Style="{StaticResource MaterialDesignFloatingActionButton}">
+                        <materialDesign:PackIcon Kind="Add" Height="20" Width="20" />
+                    </Button>
+                </DockPanel>
+                
+
+                
+                <!--<Label Grid.Row="1" Content="Получатели:" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <TextBox Grid.Row="1" Grid.Column="1" x:Name="txt_to" Margin="0,1,0,1"/>-->
+                <Label Grid.Row="3" Content="Тема:" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <TextBox Grid.Row="3" Grid.Column="1" x:Name="txt_subject" Margin="0,1,0,1"/>
+                <CheckBox x:Name="chbx_encrypt" Grid.Row="4" Content="Шифрование" HorizontalAlignment="Right" VerticalAlignment="Center" FlowDirection="RightToLeft" Margin="0,0,4,0" Unchecked="chbx_encrypt_Unchecked"/>
+                <ComboBox x:Name="cmbx_encryption" Grid.Row="4" Grid.Column="1" Margin="0,1,0,1" SelectionChanged="cmbx_encryption_SelectionChanged"/>
+                <CheckBox x:Name="chbx_sign" Grid.Row="5" Content="Подпись" HorizontalAlignment="Right" VerticalAlignment="Center" FlowDirection="RightToLeft" Margin="0,0,4,0" Unchecked="chbx_sign_Unchecked"/>
+                <ComboBox x:Name="cmbx_sign" Grid.Row="5" Grid.Column="1" Margin="0,1,0,1" SelectionChanged="cmbx_sign_SelectionChanged"/>
             </Grid>
+            
             <Border DockPanel.Dock="Bottom" BorderBrush="#FF828790" BorderThickness="0,1,0,0" Padding="8">
                 <Grid MinHeight="32">
                     <Grid.ColumnDefinitions>
@@ -82,8 +99,8 @@
                 </Grid>
             </Border>
             <ex:HtmlEditor x:Name="bodyHtmlEditor">
-
             </ex:HtmlEditor>
+            
         </DockPanel>
     </Grid>
 </Window>

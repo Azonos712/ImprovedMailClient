@@ -1,6 +1,6 @@
 ﻿using MailKit;
 using MailKit.Net.Imap;
-using MailKit.Net.Pop3;
+using MailKit.Net.Smtp;
 using MailKit.Search;
 using MimeKit;
 using System;
@@ -326,6 +326,15 @@ namespace MyMailClient
                     File.Move(fullLetterPath, newFullLetterPath);
                 }
             }
+        }
+
+        public void sendMessage(MimeMessage msg)
+        {
+            CurrentData.smtp = new SmtpClient();
+            CurrentData.smtp.Connect(SMTP_Dom, SMTP_Port, true);
+            CurrentData.smtp.Authenticate(Address, Pass);
+            CurrentData.smtp.Send(msg);
+            CurrentData.smtp.Disconnect(true);
         }
     }
 

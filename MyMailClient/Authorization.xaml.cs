@@ -1,20 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace MyMailClient
 {
@@ -130,8 +118,6 @@ namespace MyMailClient
 
                     CurrentData.curAcc = new Account(txt_login.Text.Trim(), tempHash);
                     CurrentData.curAcc.Srlz();
-                    //Account account = new Account(txt_login.Text.Trim(), tempHash);
-                    //account.Srlz();
 
                     using (StreamWriter fs = new StreamWriter(Account.GetAccPath(), true))
                     {
@@ -148,8 +134,6 @@ namespace MyMailClient
                     {
                         CurrentData.curAcc = new Account(Account.Dsrlz(txt_login.Text.Trim()));
                         Start();
-                        //Account account = new Account(Account.Dsrlz(txt_login.Text.Trim()));
-                        //Start(account);
                     }
                     else
                     {

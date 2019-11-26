@@ -294,7 +294,7 @@ namespace MyMailClient
             }
 
             WriteLetterWindow wlw = new WriteLetterWindow();
-            wlw.ShowDialog();
+            wlw.Show();
             this.Focus();
         }
     }
