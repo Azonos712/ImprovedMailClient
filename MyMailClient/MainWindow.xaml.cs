@@ -119,6 +119,11 @@ namespace MyMailClient
 
         private void btn_synch_Click(object sender, RoutedEventArgs e)
         {
+            if (CurrentData.curMail == null)
+            {
+                Utility.MsgBox("Вам стоит выбрать почтовый ящик!", "Уведомление", this);
+                return;
+            }
             useSynch(); 
             showFolders();
         }

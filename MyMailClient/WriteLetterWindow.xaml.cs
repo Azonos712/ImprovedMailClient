@@ -49,7 +49,7 @@ namespace MyMailClient
 
         private void Image_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-
+            attachmentsPanel.Items.Remove((sender as FrameworkElement).DataContext);
         }
 
         private void chbx_encrypt_Unchecked(object sender, RoutedEventArgs e)

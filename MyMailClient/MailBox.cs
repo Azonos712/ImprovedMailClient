@@ -163,12 +163,20 @@ namespace MyMailClient
                 var serverLetters = serverFolder.Fetch(0, -1, MessageSummaryItems.UniqueId | MessageSummaryItems.Flags);
 
                 List<string> localLetters = Directory.GetFiles(dirFullPath, "*.eml").ToList();
-                List<uint> UIDlocalLetters = new List<uint>();
-                foreach (var x in localLetters)
-                {
-                    var temp = x.Substring(x.LastIndexOf("\\") + 1, x.LastIndexOf("_") - x.LastIndexOf("\\") - 1);
-                    UIDlocalLetters.Add(Convert.ToUInt32(temp));
-                }
+
+                //List<string> templocalLetters = new List<string>(localLetters);
+                //templocalLetters.ForEach(x =>x.Substring(x.LastIndexOf("\\") + 1, x.LastIndexOf("_") - x.LastIndexOf("\\") - 1));
+                //List<string> tst = templocalLetters.Select(x => x.Substring(x.LastIndexOf("\\") + 1, x.LastIndexOf("_") - x.LastIndexOf("\\") - 1)).ToList();
+
+                List<uint> UIDlocalLetters = new List<uint>(localLetters.Select(x => x.Substring(x.LastIndexOf("\\") + 1,
+                    x.LastIndexOf("_") - x.LastIndexOf("\\") - 1))
+                    .ToList().Select(uint.Parse).ToList());
+
+                //foreach (var x in localLetters)
+                //{
+                //    var temp = x.Substring(x.LastIndexOf("\\") + 1, x.LastIndexOf("_") - x.LastIndexOf("\\") - 1);
+                //    UIDlocalLetters.Add(Convert.ToUInt32(temp));
+                //}
 
                 foreach (var serverLetter in serverLetters)
                 {
@@ -217,7 +225,6 @@ namespace MyMailClient
                 }
                 for (int i = 0; i < localLetters.Count; i++)
                     File.Delete(localLetters[i]);
-                //ResyncFolder(folder, buf, folder.UidValidity);
 
                 serverFolder.Close();
             }
@@ -305,7 +312,6 @@ namespace MyMailClient
 
                     serverFolder.Open(FolderAccess.ReadWrite);
                     var uids = serverFolder.Fetch(Convert.ToInt32(uid_flag[0]) - 1, -1, MessageSummaryItems.UniqueId | MessageSummaryItems.Flags);
-
                     serverFolder.AddFlags(uids[0].UniqueId, MessageFlags.Seen, true);
                     //serverFolder.SetFlags(Convert.ToInt32(uid_flag[0]) - 1, MessageFlags.Seen, true);
 
