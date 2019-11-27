@@ -81,12 +81,18 @@ namespace MyMailClient
                 if (tmscntrl_toPanel.Items.Count == 0)
                     throw new Exception("Добавьте хотя бы одного получателя!");
 
+                if (chbx_encrypt.IsChecked.Value && cmbx_encryption.SelectedItem as CryptoKey == null)
+                    throw new Exception("Выберите ключ шифрования из списка или снимите галочку");
+
+                if (chbx_sign.IsChecked.Value && cmbx_sign.SelectedItem as CryptoKey == null)
+                    throw new Exception("Выберите подпись из списка или снимите галочку");
+
                 string senderName = txt_namefrom.Text.Trim();
                 senderName = senderName.Length > 0 ? senderName : CurrentData.curMail.Address;
 
                 MimeKit.MimeMessage mimeMsg = new MimeKit.MimeMessage();
                 mimeMsg.From.Add(new MimeKit.MailboxAddress(senderName, CurrentData.curMail.Address));
-                
+
                 foreach (var tempaddress in tmscntrl_toPanel.Items)
                     mimeMsg.To.Add(new MimeKit.MailboxAddress(tempaddress.ToString()));
                 
