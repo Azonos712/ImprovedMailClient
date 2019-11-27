@@ -32,12 +32,27 @@ namespace MyMailClient
             return System.Convert.ToBase64String(input);
         }
 
+        public static byte[] StringToByte(string input)
+        {
+            return System.Convert.FromBase64String(input);
+        }
+
         public static string ByteArrayToHexString(byte[] input)
         {
             StringBuilder output = new StringBuilder();
             foreach (byte x in input)
                 output.Append(string.Format("{0:x2}", x));
             return output.ToString();
+        }
+        public static byte[] HexStringToByteArray(string hex)
+        {
+            if (hex.Length % 2 > 0)
+                throw new FormatException("Строка должна иметь чётное число символов");
+            int NumberChars = hex.Length;
+            byte[] bytes = new byte[NumberChars / 2];
+            for (int i = 0; i < NumberChars; i += 2)
+                bytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), 16);
+            return bytes;
         }
 
         public static string ColorToHexString(Color c)

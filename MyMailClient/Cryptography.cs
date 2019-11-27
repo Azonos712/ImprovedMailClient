@@ -19,8 +19,9 @@ namespace MyMailClient
         private const CipherMode AES_CIPHER_MODE = CipherMode.CBC;
         private const PaddingMode AES_PADDING_MODE = PaddingMode.ISO10126;
         public static readonly Encoding E = Encoding.Unicode;
+        private static readonly string SIGN_HASH_ALGORITHM_NAME = HashAlgorithmName.SHA1.Name;
 
-        public static readonly Encoding Enc = Encoding.UTF8;
+        //public static readonly Encoding Enc = Encoding.UTF8;
         public static byte[] GetSHA1(byte[] data)
         {
             byte[] hash;
@@ -30,7 +31,7 @@ namespace MyMailClient
         }
         public static byte[] GetSHA1(string data)
         {
-            return GetSHA1(Enc.GetBytes(data));
+            return GetSHA1(E.GetBytes(data));
         }
 
         public static string Encrypt(string data, CryptoKey rsaPublicKey)
@@ -191,6 +192,50 @@ namespace MyMailClient
                     plaintext = srDecrypt.ReadToEnd();
             }
             return plaintext;
+        }
+
+        public static string Sign(string data, CryptoKey dsaPrivateKey)
+        {
+            byte[] signature;
+            using (DSACryptoServiceProvider dsa = new DSACryptoServiceProvider())
+            {
+                try
+                {
+                    DSAParameters dsaParams;
+                    dsa.FromXmlString(dsaPrivateKey.PrivateKey);
+                    dsaParams = dsa.ExportParameters(true);
+
+                    byte[] hash = GetSHA1(data);
+                    signature = dsa.SignHash(hash, SIGN_HASH_ALGORITHM_NAME);
+                }
+                catch (Exception ex)
+                {
+                    signature = null;
+                    throw new Exception(ex.Message);
+                }
+            }
+            return signature == null ? null : Utility.ByteArrayToHexString(signature);
+        }
+
+        public static bool Verify(string data, string signature, CryptoKey dsaPublicKey)
+        {
+            using (DSACryptoServiceProvider dsa = new DSACryptoServiceProvider())
+            {
+                try
+                {
+                    DSAParameters dsaParams;
+                    dsa.FromXmlString(dsaPublicKey.PublicKey);
+                    dsaParams = dsa.ExportParameters(false);
+
+                    byte[] hash = GetSHA1(data);
+                    return dsa.VerifyHash(hash, SIGN_HASH_ALGORITHM_NAME, Utility.HexStringToByteArray(signature));
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
+            }
+            return false;
         }
     }
 }

@@ -130,25 +130,34 @@ namespace MyMailClient
 
                 var bodyBuilder = new MimeKit.BodyBuilder();
                 bodyBuilder.HtmlBody= "<html><meta charset=\"" + Utility.HTML_CHARSET + "\"><body>" + bodyHtmlEditor.ContentHtml + "</body></html>";
-                foreach (FileInfo f in attachmentsPanel.Items)
-                    bodyBuilder.Attachments.Add((f.FullName));
-
+                
                 CryptoKey encryptionKey = cmbx_encryption.SelectedItem as CryptoKey;
                 if (encryptionKey != null && chbx_encrypt.IsChecked.Value)
                 {
                     bodyBuilder.HtmlBody = Cryptography.Encrypt(bodyBuilder.HtmlBody, encryptionKey);
                     mimeMsg.Headers.Add(Cryptography.ENCRYPTION_ID_HEADER, encryptionKey.Id);
                 }
-
+                //var signtemp = "";
                 CryptoKey signatureKey = cmbx_sign.SelectedItem as CryptoKey;
                 if (signatureKey != null && chbx_sign.IsChecked.Value)
                 {
-                    //string signature = Cryptography.Sign(bodyBuilder.HtmlBody, signatureKey);
-                    //mimeMsg.Headers.Add(Cryptography.SIGNATURE_ID_HEADER, signatureKey.Id);
-                    //mimeMsg.Headers.Add(Cryptography.SIGNATURE_HEADER, signature);
+                    string signature = Cryptography.Sign(bodyBuilder.HtmlBody, signatureKey);
+                    mimeMsg.Headers.Add(Cryptography.SIGNATURE_ID_HEADER, signatureKey.Id);
+                    mimeMsg.Headers.Add(Cryptography.SIGNATURE_HEADER, signature);
+
+                    //signtemp = signature;
+                    //string signature2 = Cryptography.Sign("Привет", signatureKey);
+                    //string body2 = mimeMsg.HtmlBody ?? mimeMsg.TextBody;
+                    //bool temp2 = Cryptography.Verify(body2, signtemp, signatureKey);
+
                 }
+                foreach (FileInfo f in attachmentsPanel.Items)
+                    bodyBuilder.Attachments.Add((f.FullName));
 
                 mimeMsg.Body = bodyBuilder.ToMessageBody();
+
+                
+
 
                 btn_send.IsEnabled = false;
                 var temp = await Task.Run(() => CurrentData.curMail.sendMessage(mimeMsg));

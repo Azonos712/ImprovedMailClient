@@ -51,7 +51,50 @@ namespace MyMailClient
 
                 lbl_subj.Content = lbl_subj.ToolTip = CurrentData.curLetter.Subject;
                 lbl_date.Content = lbl_date.ToolTip = CurrentData.curLetter.Date;
-                string body = CurrentData.curLetter.HtmlBody ?? CurrentData.curLetter.TextBody;
+                string body = CurrentData.curLetter.HtmlBody.Trim() ?? CurrentData.curLetter.TextBody;
+
+                if (CurrentData.curLetter.Headers.Contains(Cryptography.SIGNATURE_ID_HEADER))
+                // Если письмо подписано
+                {
+                    List<CryptoKey> results = CurrentData.curAcc.Keys.Where(k => k.Id.Equals(CurrentData.curLetter.
+                            Headers[Cryptography.SIGNATURE_ID_HEADER])).ToList();
+                    if (results.Count > 0)
+                    {
+                        CryptoKey key = results.First();
+                        if (Cryptography.Verify(body, CurrentData.curLetter.Headers[Cryptography.SIGNATURE_HEADER], key))
+                        {
+                            lbl_ecp.Content = lbl_ecp.ToolTip =
+                                    "Верифицировано с помощью \"" + key + "\"";
+                            if (CurrentData.curLetter.From.Mailboxes.First().Address.Equals(key.OwnerAddress))
+                                lbl_ecp.Foreground = Brushes.Green;
+                            else
+                            {
+                                lbl_ecp.Content = lbl_ecp.ToolTip +=
+                                        " (отправитель не совпадает)";
+                                lbl_ecp.Foreground = Brushes.DarkOrange;
+                            }
+                        }
+                        else
+                        {
+                            lbl_ecp.Content = lbl_ecp.ToolTip =
+                                    "Подпись распознана с помощью\"" + key +
+                                    "\", однако целостность письма нарушена";
+                            lbl_ecp.Foreground = Brushes.DarkRed;
+                        }
+                    }
+                    else
+                    {
+                        lbl_ecp.Content = lbl_ecp.ToolTip =
+                                "Письмо подписано, но нет подходящего ключа для верификации";
+                        lbl_ecp.Foreground = Brushes.Black;
+                    }
+                }
+                else
+                {
+                    lbl_ecp.Content = lbl_ecp.ToolTip =
+                            "Письмо не подписано";
+                    lbl_ecp.Foreground = Brushes.Black;
+                }
 
                 if (CurrentData.curLetter.Headers.Contains(Cryptography.ENCRYPTION_ID_HEADER))
                 // Если письмо зашифровано
@@ -81,49 +124,6 @@ namespace MyMailClient
                             "Письмо не зашифровано";
                     lbl_encr.Foreground = Brushes.Black;
                 }
-
-                //if (message.Headers.Contains(Cryptography.SIGNATURE_ID_HEADER))
-                //// Если письмо подписано
-                //{
-                //    List<CryptoKey> results = account.keys.Where(k => k.Id.Equals(message.
-                //            Headers[Cryptography.SIGNATURE_ID_HEADER])).ToList();
-                //    if (results.Count > 0)
-                //    {
-                //        CryptoKey key = results.First();
-                //        if (Cryptography.Verify(body, message.Headers[Cryptography.SIGNATURE_HEADER], key))
-                //        {
-                //            signatureStatusLabel.Content = signatureStatusLabel.ToolTip =
-                //                    "Верифицировано с помощью \"" + key + "\"";
-                //            if (message.From.Mailboxes.First().Address.Equals(key.OwnerAddress))
-                //                signatureStatusLabel.Foreground = Brushes.Green;
-                //            else
-                //            {
-                //                signatureStatusLabel.Content = signatureStatusLabel.ToolTip +=
-                //                        " (отправитель не совпадает)";
-                //                signatureStatusLabel.Foreground = Brushes.DarkOrange;
-                //            }
-                //        }
-                //        else
-                //        {
-                //            signatureStatusLabel.Content = signatureStatusLabel.ToolTip =
-                //                    "Подпись распознана с помощью\"" + key +
-                //                    "\", однако целостность письма нарушена";
-                //            signatureStatusLabel.Foreground = Brushes.DarkRed;
-                //        }
-                //    }
-                //    else
-                //    {
-                //        signatureStatusLabel.Content = signatureStatusLabel.ToolTip =
-                //                "Письмо подписано, но нет подходящего ключа для верификации";
-                //        signatureStatusLabel.Foreground = Brushes.Black;
-                //    }
-                //}
-                //else
-                //{
-                //    signatureStatusLabel.Content = signatureStatusLabel.ToolTip =
-                //            "Письмо не подписано";
-                //    signatureStatusLabel.Foreground = Brushes.Black;
-                //}
 
                 // Отображение тела письма
                 int index = body.IndexOf("<html>", StringComparison.OrdinalIgnoreCase);
