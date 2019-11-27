@@ -159,8 +159,7 @@ namespace MyMailClient
             //replyBtn.IsEnabled = true;
 
         }
-
-        private void TextBlock_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        private void Chip_Click(object sender, RoutedEventArgs e)
         {
             MimeEntity attachment = (sender as FrameworkElement).DataContext as MimeEntity;
             SaveFileDialog sfd = new SaveFileDialog();
@@ -174,5 +173,7 @@ namespace MyMailClient
         {
 
         }
+
+
     }
 }

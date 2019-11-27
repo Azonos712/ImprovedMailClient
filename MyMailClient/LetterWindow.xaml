@@ -47,7 +47,8 @@
                     <ItemsControl Grid.Column="0" x:Name="attachPanel" BorderBrush="Blue" BorderThickness="1">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock TextAlignment="Center" Text="{Binding FileName}" Foreground="Blue" TextDecorations="Underline" MouseLeftButtonUp="TextBlock_MouseLeftButtonUp" Margin="0,0,4,0" Cursor="Hand"/>
+                                <materialDesign:Chip Height="25" Content="{Binding FileName}" Margin="1" Click="Chip_Click"></materialDesign:Chip>
+                                <!-- <TextBlock TextAlignment="Center" Text="{Binding FileName}" Foreground="Blue" TextDecorations="Underline" MouseLeftButtonUp="TextBlock_MouseLeftButtonUp" Margin="0,0,4,0" Cursor="Hand"/>-->
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                         <ItemsControl.ItemsPanel>
