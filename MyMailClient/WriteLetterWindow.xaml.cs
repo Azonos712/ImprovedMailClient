@@ -52,7 +52,7 @@ namespace MyMailClient
             tmscntrl_toPanel.Items.Remove((sender as FrameworkElement).DataContext);
         }
 
-        private void btn_send_Click(object s, RoutedEventArgs e)
+        private async void btn_send_Click(object s, RoutedEventArgs e)
         {
             try
             {
@@ -76,8 +76,10 @@ namespace MyMailClient
                     bodyBuilder.Attachments.Add((f.FullName));
 
                 mimeMsg.Body = bodyBuilder.ToMessageBody();
-                
-                CurrentData.curMail.sendMessage(mimeMsg);
+
+                btn_send.IsEnabled = false;
+                var temp = await Task.Run(() => CurrentData.curMail.sendMessage(mimeMsg));
+                btn_send.IsEnabled = true;
 
                 Utility.MsgBox("Сообщение успешно отправлено!","Уведомление",writeLetterWnd);
                 this.Close();

@@ -9,6 +9,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Documents;
 using System.Windows.Media;
+using System.Threading.Tasks;
 
 namespace MyMailClient
 {
@@ -127,6 +128,19 @@ namespace MyMailClient
             startSynchronization();
         }
 
+        void lockForm()
+        {
+            blackPanel.Margin = new Thickness(0, 0, 0, 0);
+            progress.Margin = new Thickness(0, 0, 0, 0);
+            status.Margin = new Thickness(0, 0, 0, 0);
+        }
+        void unlockForm()
+        {
+            blackPanel.Margin = new Thickness(1200, 0, 0, 0);
+            progress.Margin = new Thickness(1200, 0, 0, 0);
+            status.Margin = new Thickness(1200, 0, 0, 0);
+        }
+
         private void listOfMails_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (listOfMails.SelectedItem != null)
@@ -137,17 +151,15 @@ namespace MyMailClient
                 //curMail = curAcc.MlBxs.Find(x => x.Address.Contains(temp));
 
                 showFolders();
-
-                //if (noConnection == false)
-                //useSynch();
-
             }
         }
 
-        void startSynchronization()
+        async void startSynchronization()
         {
-            useSynch();
+            lockForm();
+            var temp = await Task.Run(() => useSynch());
             showFolders();
+            unlockForm();
         }
 
         void showFolders()
@@ -155,7 +167,6 @@ namespace MyMailClient
             try
             {
                 clearLetFol();
-
                 var temp = CurrentData.curMail.DisplayFolders();
                 for (int i = 0; i < temp.Count; i++)
                 {
@@ -168,7 +179,7 @@ namespace MyMailClient
             }
         }
 
-        void useSynch()
+        bool useSynch()
         {
             try
             {
@@ -183,8 +194,13 @@ namespace MyMailClient
             }
             catch (Exception ex)
             {
-                Utility.MsgBox(ex.Message, "Ошибка", this);
+                Dispatcher.Invoke((Action)(() =>
+                {
+                    Utility.MsgBox(ex.Message, "Ошибка", this);
+                }));
             }
+            return true;
+
         }
 
         private void listOfFolders_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -192,22 +208,6 @@ namespace MyMailClient
             if (listOfFolders.SelectedItem != null)
             {
                 refreshListOfLetters();
-                //TreeViewItem item = listOfFolders.SelectedItem as TreeViewItem;
-
-                //string lastPath = Utility.strFromPanelWithIcon(item);
-                //lastPath = Utility.CutEndOfPathFolder(lastPath);
-
-                //for (var i = Utility.GetParentItem(item); i != null; i = Utility.GetParentItem(i))
-                //    lastPath = Utility.CutEndOfPathFolder(Utility.strFromPanelWithIcon(i)) + "\\" + lastPath;
-
-                //string fullPath = Account.GetAccMailDir() + "\\" + CurrentData.curMail.Address + "\\" + lastPath;
-
-                //List<HelpMimeMessage> msg = CurrentData.curMail.DisplayLetters(fullPath);
-
-                //string[] clrmsg = System.IO.Directory.GetFiles(fullPath, "*.eml");
-
-                ////listOfLetters.DataContext = msg;
-                //listOfLetters.ItemsSource = msg;
             }
         }
 
@@ -224,13 +224,11 @@ namespace MyMailClient
 
             List<HelpMimeMessage> msg = CurrentData.curMail.DisplayLetters(fullPath);
 
-            //string[] clrmsg = System.IO.Directory.GetFiles(fullPath, "*.eml");
-
             //listOfLetters.DataContext = msg;
             listOfLetters.ItemsSource = msg;
         }
 
-        private void listOfLetters_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private async void listOfLetters_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             CurrentData.curLetter = (listOfLetters.SelectedItem as HelpMimeMessage).Msg;
             if (CurrentData.curLetter != null)
@@ -238,15 +236,18 @@ namespace MyMailClient
                 LetterWindow lw = new LetterWindow();
                 lw.ShowDialog();
 
+                lockForm();
+
                 TreeViewItem item = listOfFolders.SelectedItem as TreeViewItem;
                 string fullfolderPath = Utility.strFromPanelWithIcon(item);
                 fullfolderPath = Utility.CutEndOfPathFolder(fullfolderPath);
                 for (var i = Utility.GetParentItem(item); i != null; i = Utility.GetParentItem(i))
                     fullfolderPath = Utility.CutEndOfPathFolder(Utility.strFromPanelWithIcon(i)) + "\\" + fullfolderPath;
-
-                CurrentData.curMail.markLetter((listOfLetters.SelectedItem as HelpMimeMessage).FullPath, fullfolderPath);
+                var tempPath = (listOfLetters.SelectedItem as HelpMimeMessage).FullPath;
+                var temp = await Task.Run(() => CurrentData.curMail.markLetter(tempPath, fullfolderPath)); 
 
                 refreshListOfLetters();
+                unlockForm();
                 //startSynchronization();
             }
             this.Focus();

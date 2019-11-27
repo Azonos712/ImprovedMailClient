@@ -101,10 +101,12 @@
                     </ItemsControl>
                     <Button x:Name="btn_attach" Grid.Column="1" Content="Прикрепить файл" VerticalAlignment="Stretch" Margin="4,0,0,0" Click="btn_attach_Click"/>
                     <Button x:Name="btn_send" Grid.Column="2" Content="Отправить" VerticalAlignment="Stretch" Margin="4,0,0,0" Click="btn_send_Click"/>
+                    
                 </Grid>
             </Border>
             <ex:HtmlEditor x:Name="bodyHtmlEditor">
             </ex:HtmlEditor>
+
             
         </DockPanel>
     </Grid>

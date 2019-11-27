@@ -12,6 +12,7 @@ using System.Security;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 
 namespace MyMailClient
 {
@@ -252,23 +253,18 @@ namespace MyMailClient
 
         TreeViewItem DisplayFolder(string pathFile)
         {
-            TreeViewItem twi = new TreeViewItem();
 
             string[] messages = Directory.GetFiles(pathFile, "*.eml");
-            //List<MimeMessage> buf = new List<MimeMessage>();
-            //foreach (string message in messages)
-            //    buf.Add(MimeMessage.Load(message));
-            //buf.Reverse();
-            //foreach (MimeMessage message in buf)
-            //{
-            //    twi.Items.Add(message);
-            //}
 
             string temp = (pathFile.Substring(pathFile.LastIndexOf('\\') + 1)) + (messages.Length > 0 ?
                     (" (" + messages.Length + ")") : "");
 
-            twi.Header = Utility.panelWithIcon("folder.png", temp);
+            //List<TreeViewItem> twi = new List<TreeViewItem>();
+            //twi.Add(new TreeViewItem());
 
+            TreeViewItem twi = new TreeViewItem();
+
+            twi.Header = Utility.panelWithIcon("folder.png", temp);
             foreach (string subdirPath in Directory.GetDirectories(pathFile))
                 twi.Items.Add(DisplayFolder(subdirPath));
 
@@ -298,7 +294,7 @@ namespace MyMailClient
             return buf;
         }
 
-        public void markLetter(string fullLetterPath, string fullfolderPath)
+        public bool markLetter(string fullLetterPath, string fullfolderPath)
         {
             string letterName = new FileInfo(fullLetterPath).Name;
             if (!letterName.Contains("Seen"))
@@ -325,9 +321,10 @@ namespace MyMailClient
                     File.Move(fullLetterPath, newFullLetterPath);
                 }
             }
+            return true;
         }
 
-        public void sendMessage(MimeMessage msg)
+        public bool sendMessage(MimeMessage msg)
         {
             CurrentData.smtp = new SmtpClient();
             CurrentData.smtp.Connect(SMTP_Dom, SMTP_Port, true);
@@ -340,6 +337,7 @@ namespace MyMailClient
             sentFolder.Append(msg, MessageFlags.Seen, DateTimeOffset.Now);
             ImapDispose();
 
+            return true;
         }
     }
 
