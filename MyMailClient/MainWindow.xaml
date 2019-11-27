@@ -26,9 +26,10 @@
                 <MenuItem Height="30" Header="Выйти из аккаунта" Click="MenuItem_Click_2"></MenuItem>
                 <MenuItem Height="30" Header="Выйти из программы" Click="MenuItem_Click_1"></MenuItem>
             </MenuItem>
-            <MenuItem Header="Менеджер криптографии" Height="30">
-                <MenuItem Height="30" Header="Зашифровать/расшифровать сообщение"></MenuItem>
-                <MenuItem Height="30" Header="Подписать/верифицировать сообщение"></MenuItem>
+            <MenuItem Header="Криптография" Height="30">
+                <MenuItem Height="30" Header="Менеджер криптографии" Click="MenuItem_Click"></MenuItem>
+                <!--<MenuItem Height="30" Header="Зашифровать/расшифровать сообщение"></MenuItem>
+                <MenuItem Height="30" Header="Подписать/верифицировать сообщение"></MenuItem>-->
             </MenuItem>
             <MenuItem Header="Настройки" Height="30"></MenuItem>
             <MenuItem Header="Помощь" Height="30"></MenuItem>

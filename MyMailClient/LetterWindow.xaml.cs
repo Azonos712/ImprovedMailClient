@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -131,23 +132,33 @@ namespace MyMailClient
 
             wbBrwsr.NavigateToString(body);
 
-            //if (message.Headers.Contains(Cryptography.KEY_DELIVERY_HEADER))
-            //// Если это письмо - доставка ключа
-            //{
-            //    // Получить объект ключа
-            //    MimeEntity attachment = message.Attachments.First();
-            //    string tmpFile = System.IO.Path.GetTempFileName();
-            //    SaveAttachment(attachment, tmpFile);
-            //    CryptoKey key = CryptoKey.DeserializeFromFile(tmpFile);
+            if (CurrentData.curLetter.Headers.Contains(Cryptography.KEY_DELIVERY_HEADER))
+            // Если это письмо - доставка ключа
+            {
+                // Получить объект ключа
+                var tempparts = CurrentData.curLetter.HtmlBody.Split('$');
 
-            //    if (Utils.ShowConfirmation("Добавить ключ \"" + key + "\" в библиотеку ключей?") == MessageBoxResult.Yes)
-            //    {
-            //        if (KeysManagerWindow.AddKey(account, key))
-            //            account.Serialize();
-            //        else
-            //            Utils.ShowWarning("Такой ключ уже есть в библиотеке ключей");
-            //    }
-            //}
+                dynamic temp = new JavaScriptSerializer().DeserializeObject(tempparts[1]);
+
+                CurrentData.curKey = new CryptoKey(temp["PublicKey"], temp["PrivateKey"],
+                    temp["Name"], temp["OwnerAddress"], temp["EncrOrSign"], temp["Id"], (DateTime)temp["DateTime"]);
+
+                if (CurrentData.curKey != null)
+                {
+                    if (Utility.ShowConfirmation("Данное письмо содержит ключ. Вы хотите добавить его в библиотеку ключей?") == MessageBoxResult.Yes)
+                    {
+                        if (CurrentData.curAcc.AddKey())
+                        {
+                            CurrentData.curAcc.Srlz();
+                            Utility.MsgBox("Ключ успешно добавлен", "Уведомление", this);
+                        }
+                        else
+                        {
+                            Utility.MsgBox("Такой ключ уже есть в библиотеке ключей", "Уведомление", this);
+                        }
+                    }
+                }
+            }
             //else
             //// Если это письмо обыкновенное
             //{

@@ -32,6 +32,19 @@ namespace MyMailClient
             return System.Convert.ToBase64String(input);
         }
 
+        public static string ByteArrayToHexString(byte[] input)
+        {
+            StringBuilder output = new StringBuilder();
+            foreach (byte x in input)
+                output.Append(string.Format("{0:x2}", x));
+            return output.ToString();
+        }
+
+        public static string ColorToHexString(Color c)
+        {
+            return "#" + c.R.ToString("X2") + c.G.ToString("X2") + c.B.ToString("X2");
+        }
+
         public static bool ValidateEmail(this string s)
         {
             try
@@ -109,6 +122,11 @@ namespace MyMailClient
                     part.Content.DecodeTo(stream);
                 }
             }
+        }
+
+        public static MessageBoxResult ShowConfirmation(string message)
+        {
+            return MessageBox.Show(message, "Подтвердите действие", MessageBoxButton.YesNo, MessageBoxImage.Question);
         }
     }
 }

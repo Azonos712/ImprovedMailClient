@@ -271,5 +271,12 @@ namespace MyMailClient
             this.Focus();
             startSynchronization();
         }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            KeysManagerWindow kmw = new KeysManagerWindow();
+            kmw.ShowDialog();
+            this.Focus();
+        }
     }
 }

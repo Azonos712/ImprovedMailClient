@@ -44,7 +44,7 @@
                         <ColumnDefinition Width="165"/>
                     </Grid.ColumnDefinitions>
                     
-                    <ItemsControl Grid.Column="0" x:Name="attachPanel" BorderBrush="Blue" BorderThickness="1">
+                    <ItemsControl Grid.Column="0" Grid.ColumnSpan="2" x:Name="attachPanel" BorderBrush="Blue" BorderThickness="1">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <materialDesign:Chip Height="25" Content="{Binding FileName}" Margin="1" Click="Chip_Click"></materialDesign:Chip>
@@ -57,7 +57,7 @@
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                     </ItemsControl>
-                    <Button Grid.Column="1" x:Name="btn_reply" Margin="5" Content="Ответить" Click="btn_reply_Click"/>
+                    <Button Visibility="Collapsed" Grid.Column="1" x:Name="btn_reply" Margin="5" Content="Ответить" Click="btn_reply_Click"/>
                 </Grid>
             </Border>
             

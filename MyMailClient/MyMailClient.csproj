@@ -63,6 +63,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Security" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -82,12 +83,19 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Account.cs" />
+    <Compile Include="AddCryptoKeyWindow.xaml.cs">
+      <DependentUpon>AddCryptoKeyWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Authorization.xaml.cs">
       <DependentUpon>Authorization.xaml</DependentUpon>
     </Compile>
     <Compile Include="Cryptography.cs" />
+    <Compile Include="CryptoKey.cs" />
     <Compile Include="CurrentData.cs" />
     <Compile Include="HelpMimeMessage.cs" />
+    <Compile Include="KeysManagerWindow.xaml.cs">
+      <DependentUpon>KeysManagerWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="LetterWindow.xaml.cs">
       <DependentUpon>LetterWindow.xaml</DependentUpon>
     </Compile>
@@ -105,7 +113,15 @@
     <Compile Include="WriteLetterWindow.xaml.cs">
       <DependentUpon>WriteLetterWindow.xaml</DependentUpon>
     </Compile>
+    <Page Include="AddCryptoKeyWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Authorization.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="KeysManagerWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

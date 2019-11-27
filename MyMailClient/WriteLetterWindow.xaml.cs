@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -22,11 +23,20 @@ namespace MyMailClient
     /// </summary>
     public partial class WriteLetterWindow : Window
     {
-        public WriteLetterWindow()
+        CryptoKey publicToKey;
+        public WriteLetterWindow(CryptoKey tempKey=null)
         {
             InitializeComponent(); 
             txt_namefrom.Text = CurrentData.curMail.Name;
             txt_addressfrom.Text = "<" + CurrentData.curMail.Address + ">";
+
+            publicToKey = tempKey;
+            if (publicToKey != null)
+            {
+                bodyHtmlEditor.IsEnabled = btn_attach.IsEnabled =
+                        cmbx_encryption.IsEnabled = chbx_encrypt.IsEnabled =
+                        cmbx_sign.IsEnabled = chbx_sign.IsEnabled = false;
+            }
         }
 
         private void btn_addAddress_Click(object sender, RoutedEventArgs e)
@@ -67,9 +77,43 @@ namespace MyMailClient
                 
                 foreach (var tempaddress in tmscntrl_toPanel.Items)
                     mimeMsg.To.Add(new MimeKit.MailboxAddress(tempaddress.ToString()));
-
-                mimeMsg.Subject = txt_subject.Text.Trim().Length > 0 ? txt_subject.Text.Trim() : "Без темы";
                 
+                mimeMsg.Subject = txt_subject.Text.Trim().Length > 0 ? txt_subject.Text.Trim() : "Без темы";
+
+                if (publicToKey != null)
+                {
+                    mimeMsg.Headers.Add(Cryptography.KEY_DELIVERY_HEADER, "public");
+
+                    //string filename = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "tcr-public.key");
+                    //KeyToDeliver.SerializeToFile(filename);
+                    //AttachFile(filename);
+
+                    string purpuse=" ";
+                    if (publicToKey.EncrOrSign == true)
+                        purpuse = "для шифрования";
+                    else if (publicToKey.EncrOrSign == false)
+                        purpuse = "для верификации цифровой подписи";
+
+                    string ownerMatch;
+                    if (publicToKey.OwnerAddress.Equals(CurrentData.curMail.Address))
+                        ownerMatch = "<span style=\"color: " + Utility.ColorToHexString(Colors.Green) +
+                                "\">ключ принадлежит отправителю</span>";
+                    else
+                        ownerMatch = "<span style=\"color: " + Utility.ColorToHexString(Colors.DarkOrange) +
+                                "\">не совпадает с адресом отправителя</span>";
+
+                    StringBuilder body = new StringBuilder();
+                    body.Append("Это письмо содержит открытый ключ " + purpuse + "<br>");
+                    body.Append("Адрес владельца ключа: " + publicToKey.OwnerAddress + " - " + ownerMatch + "<br>");
+                    body.Append("Дата и время создания ключа: " + publicToKey.DateTime + "<br>");
+                    body.Append("<br>");
+                    body.Append("Примите запрос в менджере ключей, чтобы добавить этот ключ в Вашу библиотеку ключей"); 
+                    body.Append("<br>");
+                    body.Append("$"+ new JavaScriptSerializer().Serialize(publicToKey) + "$");
+                    bodyHtmlEditor.ContentHtml = body.ToString();
+                }
+
+
                 var bodyBuilder = new MimeKit.BodyBuilder();
                 bodyBuilder.HtmlBody= "<html><meta charset=\"" + Utility.HTML_CHARSET + "\"><body>" + bodyHtmlEditor.ContentHtml + "</body></html>";
                 foreach (FileInfo f in attachmentsPanel.Items)
@@ -84,68 +128,33 @@ namespace MyMailClient
                 Utility.MsgBox("Сообщение успешно отправлено!","Уведомление",writeLetterWnd);
                 this.Close();
 
-                using (MailMessage message = new MailMessage())
-                {
-                    //if (KeyToDeliver != null)
-                    //{
-                    //    message.Headers.Add(Cryptography.KEY_DELIVERY_HEADER, "public");
 
-                    //    string filename = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "tcr-public.key");
-                    //    KeyToDeliver.SerializeToFile(filename);
-                    //    AttachFile(filename);
+                
 
-                    //    string purpuse;
-                    //    if (KeyToDeliver.KeyPurpose == CryptoKey.Purpose.Encryption)
-                    //        purpuse = "для шифрования";
-                    //    else if (KeyToDeliver.KeyPurpose == CryptoKey.Purpose.Signature)
-                    //        purpuse = "для верификации цифровой подписи";
-                    //    else
-                    //        throw new NotImplementedException("Как Вы здесь оказались?");
+                
+                //CryptoKey signatureKey = signatureCB.SelectedItem as CryptoKey;
+                //if (signatureKey != null)
+                //{
+                //    string signature = Cryptography.Sign(message.Body, signatureKey);
+                //    message.Headers.Add(Cryptography.SIGNATURE_ID_HEADER, signatureKey.Id);
+                //    message.Headers.Add(Cryptography.SIGNATURE_HEADER, signature);
+                //}
 
-                    //    string ownerMatch;
-                    //    if (KeyToDeliver.OwnerAddress.Equals(mailbox.Address))
-                    //        ownerMatch = "<span style=\"color: " + Utils.ColorToHexString(Colors.Green) +
-                    //                "\">ключ принадлежит отправителю</span>";
-                    //    else
-                    //        ownerMatch = "<span style=\"color: " + Utils.ColorToHexString(Colors.DarkOrange) +
-                    //                "\">не совпадает с адресом отправителя</span>";
+                //CryptoKey encryptionKey = encryptionCB.SelectedItem as CryptoKey;
+                //if (encryptionKey != null)
+                //{
+                //    message.Body = Cryptography.Encrypt(message.Body, encryptionKey);
+                //    message.Headers.Add(Cryptography.ENCRYPTION_ID_HEADER, encryptionKey.Id);
+                //}
 
-                    //    StringBuilder body = new StringBuilder();
-                    //    body.Append("Это письмо содержит открытый ключ " + purpuse + "<br>");
-                    //    body.Append("Адрес владельца ключа: " + KeyToDeliver.OwnerAddress + " - " + ownerMatch + "<br>");
-                    //    body.Append("Дата и время создания ключа: " + KeyToDeliver.DateTime + "<br>");
-                    //    body.Append("<br>");
-                    //    body.Append("Приймите запрос в The Crypto, чтобы добавить этот ключ в Вашу библиотеку ключей");
-                    //    bodyHtmlEditor.ContentHtml = body.ToString();
-                    //}
-
-                    //message.Body = "<html><meta charset=\"" + Utility.HTML_CHARSET + "\"><body>" + bodyHtmlEditor.ContentHtml + "</body></html>";
-
-                    //CryptoKey signatureKey = signatureCB.SelectedItem as CryptoKey;
-                    //if (signatureKey != null)
-                    //{
-                    //    string signature = Cryptography.Sign(message.Body, signatureKey);
-                    //    message.Headers.Add(Cryptography.SIGNATURE_ID_HEADER, signatureKey.Id);
-                    //    message.Headers.Add(Cryptography.SIGNATURE_HEADER, signature);
-                    //}
-
-                    //CryptoKey encryptionKey = encryptionCB.SelectedItem as CryptoKey;
-                    //if (encryptionKey != null)
-                    //{
-                    //    message.Body = Cryptography.Encrypt(message.Body, encryptionKey);
-                    //    message.Headers.Add(Cryptography.ENCRYPTION_ID_HEADER, encryptionKey.Id);
-                    //}
-
-                    //message.IsBodyHtml = true;
-                    //foreach (FileInfo f in attachmentsPanel.Items)
-                    //    message.Attachments.Add(new Attachment(f.FullName));
+                //message.IsBodyHtml = true;
+                //foreach (FileInfo f in attachmentsPanel.Items)
+                //    message.Attachments.Add(new Attachment(f.FullName));
 
 
 
-                    //CurrentData.curMail.sendMessage(message);
+                //CurrentData.curMail.sendMessage(message);
 
-
-                }
             }
             catch (Exception ex)
             {

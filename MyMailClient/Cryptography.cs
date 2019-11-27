@@ -9,6 +9,8 @@ namespace MyMailClient
 {
     static class Cryptography
     {
+        public const string KEY_DELIVERY_HEADER = "x-MMS-key-delivery-x";
+
         public static readonly Encoding Enc = Encoding.UTF8;
         public static byte[] GetSHA1(byte[] data)
         {

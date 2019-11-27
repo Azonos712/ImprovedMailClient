@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 
 namespace MyMailClient
@@ -77,19 +78,17 @@ namespace MyMailClient
         public string Login { get; set; }
         public string Hash { get; set; }
 
-        //bool useSsl;
         internal List<MailBox> MlBxs;
+        internal List<CryptoKey> Keys;
         //ObservableCollection<Mailbox> mailboxes;
-
         //ObservableCollection<CryptoKey> keys;
         public Account(string l, string h)
         {
             this.Login = l;
             this.Hash = h;
 
-            //this.useSsl = true;
             this.MlBxs = new List<MailBox>();
-            //this.keys = new ObservableCollection<CryptoKey>();
+            this.Keys = new List<CryptoKey>();
         }
 
         public Account(Account acc)
@@ -97,13 +96,11 @@ namespace MyMailClient
             if(acc==null)
                 throw new Exception("Аккаунта нет!");
 
-
             this.Login = acc.Login;
             this.Hash = acc.Hash;
 
-            //this.useSsl = true;
             this.MlBxs = new List<MailBox>(acc.MlBxs);
-            //this.keys = new ObservableCollection<CryptoKey>();
+            this.Keys = new List<CryptoKey>(acc.Keys);
         }
 
         public bool ContainMailName(string newName, string exceptName)
@@ -148,6 +145,32 @@ namespace MyMailClient
                 acc = binaryFormatter.Deserialize(fstream) as Account;
             }
             return acc;
+        }
+
+        public bool AddKey()
+        {
+            // TODO: вдруг ID разных ключей совпадут
+            List<CryptoKey> results = Keys.Where(k => k.Id == CurrentData.curKey.Id).ToList();
+            if (results.Count == 0)
+            {
+                Keys.Add(CurrentData.curKey);
+                return true;
+            }
+            else
+            {
+                CryptoKey existing = results.First();
+                if (existing.PublicOnly && !CurrentData.curKey.PublicOnly)
+                {
+                    int index = Keys.IndexOf(existing);
+                    Keys.RemoveAt(index);
+                    Keys.Insert(index, CurrentData.curKey);
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
         }
     }
 }
