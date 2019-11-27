@@ -52,6 +52,7 @@ namespace MyMailClient
                 lbl_subj.Content = lbl_subj.ToolTip = CurrentData.curLetter.Subject;
                 lbl_date.Content = lbl_date.ToolTip = CurrentData.curLetter.Date;
                 string body = CurrentData.curLetter.HtmlBody ?? CurrentData.curLetter.TextBody;
+
                 if (CurrentData.curLetter.Headers.Contains(Cryptography.ENCRYPTION_ID_HEADER))
                 // Если письмо зашифровано
                 {
@@ -173,7 +174,7 @@ namespace MyMailClient
             }
             catch (Exception ex)
             {
-                Utility.MsgBox(ex.Message, "Ошибка", this)
+                Utility.MsgBox(ex.Message, "Ошибка", this);
             }
 
         }

@@ -121,5 +121,76 @@ namespace MyMailClient
                 return null;
             }
         }
+
+        public static string Decrypt(string crtptopack, CryptoKey rsaPrivateKey)
+        {
+            string decryptedData;
+            try
+            {
+                RSAParameters rsaParams;
+                using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider())
+                {
+                    rsa.FromXmlString(rsaPrivateKey.PrivateKey);
+                    rsaParams = rsa.ExportParameters(true);
+                }
+
+                XDocument cryptopackXml = XDocument.Parse(crtptopack);
+                byte[] data = Convert.FromBase64String(cryptopackXml.Element("root").Element("data").Value);
+                byte[] desKey = RsaDecrypt(Convert.FromBase64String(cryptopackXml.Element("root").Element("key").Value), rsaParams, DO_OAEP_PADDING);
+                byte[] desIV = Convert.FromBase64String(cryptopackXml.Element("root").Element("IV").Value);
+                decryptedData = AesDecrypt(data, desKey, desIV);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+            return decryptedData;
+        }
+
+        public static byte[] RsaDecrypt(byte[] dataToDecrypt, RSAParameters RSAKeyInfo, bool doOAEPPadding = DO_OAEP_PADDING)
+        {
+            try
+            {
+                byte[] decryptedData;
+                using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider())
+                {
+                    rsa.ImportParameters(RSAKeyInfo);
+                    decryptedData = rsa.Decrypt(dataToDecrypt, doOAEPPadding);
+                }
+                return decryptedData;
+            }
+            catch (CryptographicException e)
+            {
+                Console.WriteLine(e.ToString());
+                return null;
+            }
+        }
+
+        public static string AesDecrypt(byte[] cipherText, byte[] key, byte[] IV)
+        {
+            if (cipherText == null || cipherText.Length <= 0)
+                throw new ArgumentNullException("cipherText");
+            if (key == null || key.Length <= 0)
+                throw new ArgumentNullException("key");
+            if (IV == null || IV.Length <= 0)
+                throw new ArgumentNullException("IV");
+
+            string plaintext = null;
+            using (AesCryptoServiceProvider aes = new AesCryptoServiceProvider())
+            {
+                aes.Mode = AES_CIPHER_MODE;
+                aes.Key = key;
+                aes.IV = IV;
+                aes.Padding = AES_PADDING_MODE;
+
+                ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+                using (MemoryStream msDecrypt = new MemoryStream(cipherText))
+                using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
+                using (StreamReader srDecrypt = new StreamReader(csDecrypt, E))
+                    plaintext = srDecrypt.ReadToEnd();
+            }
+            return plaintext;
+        }
     }
 }
