@@ -29,90 +29,114 @@ namespace MyMailClient
             txt_addressfrom.Text = "<" + CurrentData.curMail.Address + ">";
         }
 
+        private void btn_addAddress_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (txt_addAddress.Text.Trim().Length == 0)
+                    throw new Exception("Введите адрес получателя!");
+
+                if (!Utility.ValidateEmail(txt_addAddress.Text.Trim()))
+                    throw new Exception("Введён некорректный адрес!");
+
+                tmscntrl_toPanel.Items.Add(txt_addAddress.Text.Trim());
+                txt_addAddress.Text = "";
+            }
+            catch (Exception ex)
+            {
+                Utility.MsgBox(ex.Message, "Ошибка", writeLetterWnd);
+            }
+        }
+        private void Chip_DeleteClick(object sender, RoutedEventArgs e)
+        {
+            tmscntrl_toPanel.Items.Remove((sender as FrameworkElement).DataContext);
+        }
+
         private void btn_send_Click(object s, RoutedEventArgs e)
         {
-
-            //if (txt_to.Text.Trim().Length == 0)
-            //    throw new Exception("Введите хотя бы одного получателя!");
-
-            string senderName = txt_namefrom.Text.Trim();
-            senderName = senderName.Length > 0 ? senderName : CurrentData.curMail.Address;
-            MailAddress sender = new MailAddress(CurrentData.curMail.Address, senderName);
-
-            MimeKit.MimeMessage mimeMsg = new MimeKit.MimeMessage();
-            //mimeMsg.From.Add(new MimeKit.MailboxAddress());
-            //message1.From(sender);
-            
-            using (MailMessage message = new MailMessage())
+            try
             {
-                message.From = sender;
-                //message.To.Add(txt_to.Text);
-                message.Subject = txt_subject.Text.Length > 0 ? txt_subject.Text : "Без темы";
+                if (tmscntrl_toPanel.Items.Count == 0)
+                    throw new Exception("Добавьте хотя бы одного получателя!");
 
-                //if (KeyToDeliver != null)
-                //{
-                //    message.Headers.Add(Cryptography.KEY_DELIVERY_HEADER, "public");
+                string senderName = txt_namefrom.Text.Trim();
+                senderName = senderName.Length > 0 ? senderName : CurrentData.curMail.Address;
+                MailAddress sender = new MailAddress(CurrentData.curMail.Address, senderName);
 
-                //    string filename = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "tcr-public.key");
-                //    KeyToDeliver.SerializeToFile(filename);
-                //    AttachFile(filename);
+                MimeKit.MimeMessage mimeMsg = new MimeKit.MimeMessage();
+                //mimeMsg.From.Add(new MimeKit.MailboxAddress());
+                //message1.From(sender);
 
-                //    string purpuse;
-                //    if (KeyToDeliver.KeyPurpose == CryptoKey.Purpose.Encryption)
-                //        purpuse = "для шифрования";
-                //    else if (KeyToDeliver.KeyPurpose == CryptoKey.Purpose.Signature)
-                //        purpuse = "для верификации цифровой подписи";
-                //    else
-                //        throw new NotImplementedException("Как Вы здесь оказались?");
-
-                //    string ownerMatch;
-                //    if (KeyToDeliver.OwnerAddress.Equals(mailbox.Address))
-                //        ownerMatch = "<span style=\"color: " + Utils.ColorToHexString(Colors.Green) +
-                //                "\">ключ принадлежит отправителю</span>";
-                //    else
-                //        ownerMatch = "<span style=\"color: " + Utils.ColorToHexString(Colors.DarkOrange) +
-                //                "\">не совпадает с адресом отправителя</span>";
-
-                //    StringBuilder body = new StringBuilder();
-                //    body.Append("Это письмо содержит открытый ключ " + purpuse + "<br>");
-                //    body.Append("Адрес владельца ключа: " + KeyToDeliver.OwnerAddress + " - " + ownerMatch + "<br>");
-                //    body.Append("Дата и время создания ключа: " + KeyToDeliver.DateTime + "<br>");
-                //    body.Append("<br>");
-                //    body.Append("Приймите запрос в The Crypto, чтобы добавить этот ключ в Вашу библиотеку ключей");
-                //    bodyHtmlEditor.ContentHtml = body.ToString();
-                //}
-
-                message.Body = "<html><meta charset=\"" + Utility.HTML_CHARSET + "\"><body>" + bodyHtmlEditor.ContentHtml + "</body></html>";
-
-                //CryptoKey signatureKey = signatureCB.SelectedItem as CryptoKey;
-                //if (signatureKey != null)
-                //{
-                //    string signature = Cryptography.Sign(message.Body, signatureKey);
-                //    message.Headers.Add(Cryptography.SIGNATURE_ID_HEADER, signatureKey.Id);
-                //    message.Headers.Add(Cryptography.SIGNATURE_HEADER, signature);
-                //}
-
-                //CryptoKey encryptionKey = encryptionCB.SelectedItem as CryptoKey;
-                //if (encryptionKey != null)
-                //{
-                //    message.Body = Cryptography.Encrypt(message.Body, encryptionKey);
-                //    message.Headers.Add(Cryptography.ENCRYPTION_ID_HEADER, encryptionKey.Id);
-                //}
-
-                message.IsBodyHtml = true;
-                foreach (FileInfo f in attachmentsPanel.Items)
-                    message.Attachments.Add(new Attachment(f.FullName));
-
-
-                try
+                using (MailMessage message = new MailMessage())
                 {
+                    message.From = sender;
+                    //message.To.Add(txt_to.Text);
+                    message.Subject = txt_subject.Text.Length > 0 ? txt_subject.Text : "Без темы";
+
+                    //if (KeyToDeliver != null)
+                    //{
+                    //    message.Headers.Add(Cryptography.KEY_DELIVERY_HEADER, "public");
+
+                    //    string filename = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "tcr-public.key");
+                    //    KeyToDeliver.SerializeToFile(filename);
+                    //    AttachFile(filename);
+
+                    //    string purpuse;
+                    //    if (KeyToDeliver.KeyPurpose == CryptoKey.Purpose.Encryption)
+                    //        purpuse = "для шифрования";
+                    //    else if (KeyToDeliver.KeyPurpose == CryptoKey.Purpose.Signature)
+                    //        purpuse = "для верификации цифровой подписи";
+                    //    else
+                    //        throw new NotImplementedException("Как Вы здесь оказались?");
+
+                    //    string ownerMatch;
+                    //    if (KeyToDeliver.OwnerAddress.Equals(mailbox.Address))
+                    //        ownerMatch = "<span style=\"color: " + Utils.ColorToHexString(Colors.Green) +
+                    //                "\">ключ принадлежит отправителю</span>";
+                    //    else
+                    //        ownerMatch = "<span style=\"color: " + Utils.ColorToHexString(Colors.DarkOrange) +
+                    //                "\">не совпадает с адресом отправителя</span>";
+
+                    //    StringBuilder body = new StringBuilder();
+                    //    body.Append("Это письмо содержит открытый ключ " + purpuse + "<br>");
+                    //    body.Append("Адрес владельца ключа: " + KeyToDeliver.OwnerAddress + " - " + ownerMatch + "<br>");
+                    //    body.Append("Дата и время создания ключа: " + KeyToDeliver.DateTime + "<br>");
+                    //    body.Append("<br>");
+                    //    body.Append("Приймите запрос в The Crypto, чтобы добавить этот ключ в Вашу библиотеку ключей");
+                    //    bodyHtmlEditor.ContentHtml = body.ToString();
+                    //}
+
+                    message.Body = "<html><meta charset=\"" + Utility.HTML_CHARSET + "\"><body>" + bodyHtmlEditor.ContentHtml + "</body></html>";
+
+                    //CryptoKey signatureKey = signatureCB.SelectedItem as CryptoKey;
+                    //if (signatureKey != null)
+                    //{
+                    //    string signature = Cryptography.Sign(message.Body, signatureKey);
+                    //    message.Headers.Add(Cryptography.SIGNATURE_ID_HEADER, signatureKey.Id);
+                    //    message.Headers.Add(Cryptography.SIGNATURE_HEADER, signature);
+                    //}
+
+                    //CryptoKey encryptionKey = encryptionCB.SelectedItem as CryptoKey;
+                    //if (encryptionKey != null)
+                    //{
+                    //    message.Body = Cryptography.Encrypt(message.Body, encryptionKey);
+                    //    message.Headers.Add(Cryptography.ENCRYPTION_ID_HEADER, encryptionKey.Id);
+                    //}
+
+                    message.IsBodyHtml = true;
+                    foreach (FileInfo f in attachmentsPanel.Items)
+                        message.Attachments.Add(new Attachment(f.FullName));
+
+
+
                     //CurrentData.curMail.sendMessage(message);
+
+
                 }
-                catch (Exception ex)
-                {
-                    Utility.MsgBox(ex.Message, "Ошибка", writeLetterWnd);
-                }
-                
+            }
+            catch (Exception ex)
+            {
+                Utility.MsgBox(ex.Message, "Ошибка", writeLetterWnd);
             }
         }
 
@@ -131,8 +155,7 @@ namespace MyMailClient
             FileInfo f = new FileInfo(fullName);
             attachmentsPanel.Items.Add(f);
         }
-
-        private void Image_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        private void Chip_DeleteClick_1(object sender, RoutedEventArgs e)
         {
             attachmentsPanel.Items.Remove((sender as FrameworkElement).DataContext);
         }
@@ -157,9 +180,6 @@ namespace MyMailClient
 
         }
 
-        private void btn_addAddress_Click(object sender, RoutedEventArgs e)
-        {
 
-        }
     }
 }
