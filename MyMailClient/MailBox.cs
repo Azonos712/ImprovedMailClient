@@ -309,20 +309,19 @@ namespace MyMailClient
 
                     var serverFolder = CurrentData.imap.GetFolder(fullfolderPath);
                     
-
                     serverFolder.Open(FolderAccess.ReadWrite);
-                    var uids = serverFolder.Fetch(Convert.ToInt32(uid_flag[0]) - 1, -1, MessageSummaryItems.UniqueId | MessageSummaryItems.Flags);
-                    serverFolder.AddFlags(uids[0].UniqueId, MessageFlags.Seen, true);
-                    //serverFolder.SetFlags(Convert.ToInt32(uid_flag[0]) - 1, MessageFlags.Seen, true);
+                    List<UniqueId> uids = new List<UniqueId>();
+                    uids.Add(new UniqueId(Convert.ToUInt32(uid_flag[0])));
+                    var uid = serverFolder.Fetch(uids, MessageSummaryItems.UniqueId | MessageSummaryItems.Flags);
+                    serverFolder.AddFlags(uid[0].UniqueId, MessageFlags.Seen, true);
 
-                    var serverLetter = serverFolder.Fetch((int)uids[0].UniqueId.Id-1, -1, MessageSummaryItems.UniqueId | MessageSummaryItems.Flags);
+                    var serverLetter = serverFolder.Fetch(uids, MessageSummaryItems.UniqueId | MessageSummaryItems.Flags);
                     
                     serverFolder.Close();
                     ImapDispose();
+                    
                     string newLetterName = serverLetter[0].UniqueId.ToString() + "_" + serverLetter[0].Flags.Value.ToString();
-
                     string newFullLetterPath = fullLetterPath.Substring(0, fullLetterPath.LastIndexOf("\\")+1) + newLetterName + ".eml";
-
                     File.Move(fullLetterPath, newFullLetterPath);
                 }
             }
