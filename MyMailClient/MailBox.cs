@@ -326,6 +326,10 @@ namespace MyMailClient
 
         public bool sendMessage(MimeMessage msg)
         {
+            try
+            {
+
+            
             CurrentData.smtp = new SmtpClient();
             CurrentData.smtp.Connect(SMTP_Dom, SMTP_Port, true);
             CurrentData.smtp.Authenticate(Address, Pass);
@@ -336,7 +340,10 @@ namespace MyMailClient
             var sentFolder = CurrentData.imap.GetFolder(SpecialFolder.Sent);
             sentFolder.Append(msg, MessageFlags.Seen, DateTimeOffset.Now);
             ImapDispose();
-
+            }catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
             return true;
         }
     }

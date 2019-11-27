@@ -102,10 +102,6 @@ namespace MyMailClient
                 {
                     mimeMsg.Headers.Add(Cryptography.KEY_DELIVERY_HEADER, "public");
 
-                    //string filename = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "tcr-public.key");
-                    //KeyToDeliver.SerializeToFile(filename);
-                    //AttachFile(filename);
-
                     string purpuse=" ";
                     if (publicToKey.EncrOrSign == true)
                         purpuse = "для шифрования";
@@ -136,6 +132,21 @@ namespace MyMailClient
                 bodyBuilder.HtmlBody= "<html><meta charset=\"" + Utility.HTML_CHARSET + "\"><body>" + bodyHtmlEditor.ContentHtml + "</body></html>";
                 foreach (FileInfo f in attachmentsPanel.Items)
                     bodyBuilder.Attachments.Add((f.FullName));
+
+                CryptoKey encryptionKey = cmbx_encryption.SelectedItem as CryptoKey;
+                if (encryptionKey != null && chbx_encrypt.IsChecked.Value)
+                {
+                    bodyBuilder.HtmlBody = Cryptography.Encrypt(bodyBuilder.HtmlBody, encryptionKey);
+                    mimeMsg.Headers.Add(Cryptography.ENCRYPTION_ID_HEADER, encryptionKey.Id);
+                }
+
+                CryptoKey signatureKey = cmbx_sign.SelectedItem as CryptoKey;
+                if (signatureKey != null && chbx_sign.IsChecked.Value)
+                {
+                    //string signature = Cryptography.Sign(bodyBuilder.HtmlBody, signatureKey);
+                    //mimeMsg.Headers.Add(Cryptography.SIGNATURE_ID_HEADER, signatureKey.Id);
+                    //mimeMsg.Headers.Add(Cryptography.SIGNATURE_HEADER, signature);
+                }
 
                 mimeMsg.Body = bodyBuilder.ToMessageBody();
 
