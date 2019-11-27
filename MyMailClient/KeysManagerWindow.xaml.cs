@@ -64,7 +64,13 @@ namespace MyMailClient
         }
         private void btn_remove_Click(object sender, RoutedEventArgs e)
         {
-
+            CryptoKey key = lb_keys.SelectedItem as CryptoKey;
+            if (key != null)
+            {
+                CurrentData.curAcc.Keys.Remove(key);
+                FilterKeys();
+                CurrentData.curAcc.Srlz();
+            }
         }
 
         private void btn_sendKey_Click(object sender, RoutedEventArgs e)
