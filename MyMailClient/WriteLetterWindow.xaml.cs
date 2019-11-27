@@ -30,6 +30,12 @@ namespace MyMailClient
             txt_namefrom.Text = CurrentData.curMail.Name;
             txt_addressfrom.Text = "<" + CurrentData.curMail.Address + ">";
 
+            List<CryptoKey> encryptionKeys = SelectKeys(true, true);
+            cmbx_encryption.ItemsSource = encryptionKeys;
+            List<CryptoKey> signatureKeys = SelectKeys(false, false);
+            cmbx_sign.ItemsSource = signatureKeys;
+
+
             publicToKey = tempKey;
             if (publicToKey != null)
             {
@@ -37,6 +43,12 @@ namespace MyMailClient
                         cmbx_encryption.IsEnabled = chbx_encrypt.IsEnabled =
                         cmbx_sign.IsEnabled = chbx_sign.IsEnabled = false;
             }
+        }
+
+        private List<CryptoKey> SelectKeys(bool purpose, bool includePublic)
+        {
+            return new List<CryptoKey>(CurrentData.curAcc.Keys.Where(key =>
+                key.EncrOrSign == purpose && (includePublic || !key.PublicOnly)));
         }
 
         private void btn_addAddress_Click(object sender, RoutedEventArgs e)

@@ -69,5 +69,10 @@ namespace MyMailClient
             output.DateTime = this.DateTime;
             return output;
         }
+
+        public override string ToString()
+        {
+            return Name + " (" + OwnerAddress + ")";
+        }
     }
 }
