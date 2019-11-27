@@ -20,7 +20,7 @@ namespace MyMailClient
     {
 
         public const string DEFAULT_SMTP_SUBDOMAIN = "smtp.";
-        public const string DEFAULT_SMTP_PORT = "587";
+        public const string DEFAULT_SMTP_PORT = "465";
         public const string DEFAULT_IMAP_SUBDOMAIN = "imap.";
         public const string DEFAULT_IMAP_PORT = "993";
 
@@ -335,6 +335,12 @@ namespace MyMailClient
             CurrentData.smtp.Authenticate(Address, Pass);
             CurrentData.smtp.Send(msg);
             CurrentData.smtp.Disconnect(true);
+
+            ImapConnection();
+            var sentFolder = CurrentData.imap.GetFolder(SpecialFolder.Sent);
+            sentFolder.Append(msg, MessageFlags.Seen, DateTimeOffset.Now);
+            ImapDispose();
+
         }
     }
 

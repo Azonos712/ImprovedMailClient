@@ -124,8 +124,7 @@ namespace MyMailClient
                 Utility.MsgBox("Вам стоит выбрать почтовый ящик!", "Уведомление", this);
                 return;
             }
-            useSynch(); 
-            showFolders();
+            startSynchronization();
         }
 
         private void listOfMails_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -143,6 +142,12 @@ namespace MyMailClient
                 //useSynch();
 
             }
+        }
+
+        void startSynchronization()
+        {
+            useSynch();
+            showFolders();
         }
 
         void showFolders()
@@ -292,10 +297,10 @@ namespace MyMailClient
                 Utility.MsgBox("Вам стоит выбрать почтовый ящик!", "Уведомление", this);
                 return;
             }
-
             WriteLetterWindow wlw = new WriteLetterWindow();
-            wlw.Show();
+            wlw.ShowDialog();
             this.Focus();
+            startSynchronization();
         }
     }
 }

@@ -61,18 +61,29 @@ namespace MyMailClient
 
                 string senderName = txt_namefrom.Text.Trim();
                 senderName = senderName.Length > 0 ? senderName : CurrentData.curMail.Address;
-                MailAddress sender = new MailAddress(CurrentData.curMail.Address, senderName);
 
                 MimeKit.MimeMessage mimeMsg = new MimeKit.MimeMessage();
-                //mimeMsg.From.Add(new MimeKit.MailboxAddress());
-                //message1.From(sender);
+                mimeMsg.From.Add(new MimeKit.MailboxAddress(senderName, CurrentData.curMail.Address));
+                
+                foreach (var tempaddress in tmscntrl_toPanel.Items)
+                    mimeMsg.To.Add(new MimeKit.MailboxAddress(tempaddress.ToString()));
+
+                mimeMsg.Subject = txt_subject.Text.Trim().Length > 0 ? txt_subject.Text.Trim() : "Без темы";
+                
+                var bodyBuilder = new MimeKit.BodyBuilder();
+                bodyBuilder.HtmlBody= "<html><meta charset=\"" + Utility.HTML_CHARSET + "\"><body>" + bodyHtmlEditor.ContentHtml + "</body></html>";
+                foreach (FileInfo f in attachmentsPanel.Items)
+                    bodyBuilder.Attachments.Add((f.FullName));
+
+                mimeMsg.Body = bodyBuilder.ToMessageBody();
+                
+                CurrentData.curMail.sendMessage(mimeMsg);
+
+                Utility.MsgBox("Сообщение успешно отправлено!","Уведомление",writeLetterWnd);
+                this.Close();
 
                 using (MailMessage message = new MailMessage())
                 {
-                    message.From = sender;
-                    //message.To.Add(txt_to.Text);
-                    message.Subject = txt_subject.Text.Length > 0 ? txt_subject.Text : "Без темы";
-
                     //if (KeyToDeliver != null)
                     //{
                     //    message.Headers.Add(Cryptography.KEY_DELIVERY_HEADER, "public");
@@ -106,7 +117,7 @@ namespace MyMailClient
                     //    bodyHtmlEditor.ContentHtml = body.ToString();
                     //}
 
-                    message.Body = "<html><meta charset=\"" + Utility.HTML_CHARSET + "\"><body>" + bodyHtmlEditor.ContentHtml + "</body></html>";
+                    //message.Body = "<html><meta charset=\"" + Utility.HTML_CHARSET + "\"><body>" + bodyHtmlEditor.ContentHtml + "</body></html>";
 
                     //CryptoKey signatureKey = signatureCB.SelectedItem as CryptoKey;
                     //if (signatureKey != null)
@@ -123,9 +134,9 @@ namespace MyMailClient
                     //    message.Headers.Add(Cryptography.ENCRYPTION_ID_HEADER, encryptionKey.Id);
                     //}
 
-                    message.IsBodyHtml = true;
-                    foreach (FileInfo f in attachmentsPanel.Items)
-                        message.Attachments.Add(new Attachment(f.FullName));
+                    //message.IsBodyHtml = true;
+                    //foreach (FileInfo f in attachmentsPanel.Items)
+                    //    message.Attachments.Add(new Attachment(f.FullName));
 
 
 
