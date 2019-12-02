@@ -78,10 +78,16 @@ namespace MyMailClient
             if (CurrentData.curMail != null)
             {
                 CryptoKey key = lb_keys.SelectedItem as CryptoKey;
+                if (key != null)
+                {
+                    WriteLetterWindow wlw = new WriteLetterWindow(key.GetPublicCryptoKey());
 
-                WriteLetterWindow wlw = new WriteLetterWindow(key.GetPublicCryptoKey());
-
-                wlw.Show();
+                    wlw.Show();
+                }
+                else
+                {
+                    Utility.MsgBox("Выберите ключ для отправки!", "Ошибка", this);
+                }
             }
             else
             {

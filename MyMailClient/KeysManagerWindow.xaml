@@ -17,10 +17,6 @@
                     <ColumnDefinition Width="1*"/>
                     <ColumnDefinition Width="1*"/>
                     <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
 
                 <Button Height="45" Width="45" x:Name="btn_add" ToolTip="Добавить ключ" Style="{StaticResource MaterialDesignFloatingActionButton}" Click="btn_add_Click">
@@ -29,13 +25,9 @@
                 <Button Height="45" Width="45" x:Name="btn_remove" Grid.Column="1" ToolTip="Удалить ключ" Style="{StaticResource MaterialDesignFloatingActionButton}" Click="btn_remove_Click">
                     <materialDesign:PackIcon Kind="DeleteEmptyOutline" Height="30" Width="30"/>
                 </Button>
-                <Button x:Name="renameKeyBtn" Grid.Column="2" ToolTip="Переименовать ключ" Style="{StaticResource MaterialDesignFloatingActionButton}"/>
-                <Button x:Name="saveKeyBtn" Grid.Column="3" ToolTip="Сохранить ключ в файл" Style="{StaticResource MaterialDesignFloatingActionButton}" />
                 <Button Height="45" Width="45" x:Name="btn_sendKey" Grid.Column="4" ToolTip="Отправить открытый ключ" Style="{StaticResource MaterialDesignFloatingActionButton}" Click="btn_sendKey_Click">
                     <materialDesign:PackIcon Kind="SendLock" Height="30" Width="30"/>
                 </Button>
-                <Button x:Name="encryptBtn" Grid.Column="5" ToolTip="Зашифровать/подписать файл" Style="{StaticResource MaterialDesignFloatingActionButton}"/>
-                <Button x:Name="decryptBtn" Grid.Column="6" ToolTip="Расшифровать/верифицировать файл" Style="{StaticResource MaterialDesignFloatingActionButton}"/>
             </Grid>
             <ListBox ItemsSource="{Binding}" x:Name="lb_keys" Margin="8,8,8,0" BorderBrush="#FF828790" BorderThickness="1" HorizontalContentAlignment="Stretch">
                 <ListBox.ItemTemplate>

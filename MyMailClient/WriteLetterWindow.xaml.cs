@@ -162,8 +162,13 @@ namespace MyMailClient
                 btn_send.IsEnabled = false;
                 var temp = await Task.Run(() => CurrentData.curMail.sendMessage(mimeMsg));
                 btn_send.IsEnabled = true;
+                if (temp == false)
+                    throw new Exception("Что-то помешало отправке сообщения!");
+
 
                 Utility.MsgBox("Сообщение успешно отправлено!","Уведомление",writeLetterWnd);
+
+                DialogResult = true;
                 this.Close();
 
 

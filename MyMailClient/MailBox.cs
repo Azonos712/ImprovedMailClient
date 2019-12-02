@@ -328,21 +328,20 @@ namespace MyMailClient
         {
             try
             {
+                CurrentData.smtp = new SmtpClient();
+                CurrentData.smtp.Connect(SMTP_Dom, SMTP_Port, true);
+                CurrentData.smtp.Authenticate(Address, Pass);
+                CurrentData.smtp.Send(msg);
+                CurrentData.smtp.Disconnect(true);
 
-            
-            CurrentData.smtp = new SmtpClient();
-            CurrentData.smtp.Connect(SMTP_Dom, SMTP_Port, true);
-            CurrentData.smtp.Authenticate(Address, Pass);
-            CurrentData.smtp.Send(msg);
-            CurrentData.smtp.Disconnect(true);
-
-            ImapConnection();
-            var sentFolder = CurrentData.imap.GetFolder(SpecialFolder.Sent);
-            sentFolder.Append(msg, MessageFlags.Seen, DateTimeOffset.Now);
-            ImapDispose();
-            }catch(Exception ex)
+                ImapConnection();
+                var sentFolder = CurrentData.imap.GetFolder(SpecialFolder.Sent);
+                sentFolder.Append(msg, MessageFlags.Seen, DateTimeOffset.Now);
+                ImapDispose();
+            }
+            catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                return false;
             }
             return true;
         }

@@ -107,9 +107,6 @@
       <DependentUpon>MyMsg.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utility.cs" />
-    <Compile Include="WriteLetter.xaml.cs">
-      <DependentUpon>WriteLetter.xaml</DependentUpon>
-    </Compile>
     <Compile Include="WriteLetterWindow.xaml.cs">
       <DependentUpon>WriteLetterWindow.xaml</DependentUpon>
     </Compile>
@@ -146,10 +143,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="MyMsg.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="WriteLetter.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

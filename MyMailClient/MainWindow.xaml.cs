@@ -39,6 +39,12 @@ namespace MyMailClient
         /// </summary>
         private void MenuItem_Click_2(object sender, RoutedEventArgs e)
         {
+            CurrentData.curAcc = null;
+            CurrentData.curKey = null;
+            CurrentData.curLetter = null;
+            CurrentData.curMail = null;
+            CurrentData.imap = null;
+            CurrentData.smtp = null;
             Authorization az = new Authorization();
             az.Show();
             this.Close();
@@ -185,12 +191,18 @@ namespace MyMailClient
             {
                 // TODO: выполнять подключение и загрузку писем в отдельном потоке
                 if (CurrentData.curMail.ImapConnection())
+                {
                     CurrentData.curMail.StartResync(); //CurrentData.curMail.DownloadLetters();////
+                }
                 else
-                    Utility.MsgBox("Что-то помешало подключению данного почтового ящика! " +
+                {
+                    Dispatcher.Invoke((Action)(() =>
+                    {
+                        Utility.MsgBox("Что-то помешало подключению данного почтового ящика! " +
                         "Будут отображены только письма, которые были синхронизированны во время " +
                         "последнего сеанса", "Ошибка", this);
-
+                    }));
+                }
             }
             catch (Exception ex)
             {
@@ -244,7 +256,7 @@ namespace MyMailClient
                 for (var i = Utility.GetParentItem(item); i != null; i = Utility.GetParentItem(i))
                     fullfolderPath = Utility.CutEndOfPathFolder(Utility.strFromPanelWithIcon(i)) + "\\" + fullfolderPath;
                 var tempPath = (listOfLetters.SelectedItem as HelpMimeMessage).FullPath;
-                var temp = await Task.Run(() => CurrentData.curMail.markLetter(tempPath, fullfolderPath)); 
+                var temp = await Task.Run(() => CurrentData.curMail.markLetter(tempPath, fullfolderPath));
 
                 refreshListOfLetters();
                 unlockForm();
@@ -267,9 +279,9 @@ namespace MyMailClient
                 return;
             }
             WriteLetterWindow wlw = new WriteLetterWindow();
-            wlw.ShowDialog();
+            if (wlw.ShowDialog().Value)
+                startSynchronization();
             this.Focus();
-            startSynchronization();
         }
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)

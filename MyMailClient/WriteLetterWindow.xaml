@@ -71,9 +71,11 @@
                 <Label Grid.Row="3" Content="Тема:" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                 <TextBox Grid.Row="3" Grid.Column="1" x:Name="txt_subject" Margin="0,1,0,1"/>
                 <CheckBox x:Name="chbx_encrypt" Grid.Row="4" Content="Шифрование" HorizontalAlignment="Right" VerticalAlignment="Center" FlowDirection="RightToLeft" Margin="0,0,4,0" Unchecked="chbx_encrypt_Unchecked"/>
-                <ComboBox x:Name="cmbx_encryption" Grid.Row="4" Grid.Column="1" Margin="0,1,0,1" SelectionChanged="cmbx_encryption_SelectionChanged"/>
+                <ComboBox x:Name="cmbx_encryption" Grid.Row="4" Grid.Column="1" Margin="0,0,0,0" SelectionChanged="cmbx_encryption_SelectionChanged">
+                 
+                </ComboBox>
                 <CheckBox x:Name="chbx_sign" Grid.Row="5" Content="Подпись" HorizontalAlignment="Right" VerticalAlignment="Center" FlowDirection="RightToLeft" Margin="0,0,4,0" Unchecked="chbx_sign_Unchecked"/>
-                <ComboBox x:Name="cmbx_sign" Grid.Row="5" Grid.Column="1" Margin="0,1,0,1" SelectionChanged="cmbx_sign_SelectionChanged"/>
+                <ComboBox x:Name="cmbx_sign" Grid.Row="5" Grid.Column="1" Margin="0,0,0,0" SelectionChanged="cmbx_sign_SelectionChanged"/>
             </Grid>
             
             <Border DockPanel.Dock="Bottom" BorderBrush="#FF828790" BorderThickness="0,1,0,0" Padding="8">

@@ -31,8 +31,6 @@
                 <!--<MenuItem Height="30" Header="Зашифровать/расшифровать сообщение"></MenuItem>
                 <MenuItem Height="30" Header="Подписать/верифицировать сообщение"></MenuItem>-->
             </MenuItem>
-            <MenuItem Header="Настройки" Height="30"></MenuItem>
-            <MenuItem Header="Помощь" Height="30"></MenuItem>
         </Menu>
 
         <Button ToolTip="Добавить новый почтовый ящик" x:Name="btn_add" Click="btn_add_Click" Height="50" Width="50" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0 5 210 0" Grid.Row="1" Style="{StaticResource MaterialDesignFloatingActionButton}">

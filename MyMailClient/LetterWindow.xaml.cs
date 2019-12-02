@@ -51,7 +51,7 @@ namespace MyMailClient
 
                 lbl_subj.Content = lbl_subj.ToolTip = CurrentData.curLetter.Subject;
                 lbl_date.Content = lbl_date.ToolTip = CurrentData.curLetter.Date;
-                string body = CurrentData.curLetter.HtmlBody.Trim() ?? CurrentData.curLetter.TextBody;
+                string body = CurrentData.curLetter.HtmlBody!=null ? CurrentData.curLetter.HtmlBody.Trim():CurrentData.curLetter.TextBody;
 
                 if (CurrentData.curLetter.Headers.Contains(Cryptography.SIGNATURE_ID_HEADER))
                 // Если письмо подписано
