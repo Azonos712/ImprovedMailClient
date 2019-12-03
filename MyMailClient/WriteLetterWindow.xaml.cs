@@ -24,7 +24,7 @@ namespace MyMailClient
     public partial class WriteLetterWindow : Window
     {
         CryptoKey publicToKey;
-        public WriteLetterWindow(CryptoKey tempKey=null)
+        public WriteLetterWindow(CryptoKey tempKey=null,bool reply=false)
         {
             InitializeComponent(); 
             txt_namefrom.Text = CurrentData.curMail.Name;
@@ -42,6 +42,13 @@ namespace MyMailClient
                 bodyHtmlEditor.IsEnabled = btn_attach.IsEnabled =
                         cmbx_encryption.IsEnabled = chbx_encrypt.IsEnabled =
                         cmbx_sign.IsEnabled = chbx_sign.IsEnabled = false;
+            }
+
+            if (reply)
+            {
+                tmscntrl_toPanel.Items.Add(CurrentData.curLetter.From.Mailboxes.First().Address);
+                txt_addAddress.Text = "";
+                txt_subject.Text = "Re: " + CurrentData.curLetter.Subject;
             }
         }
 

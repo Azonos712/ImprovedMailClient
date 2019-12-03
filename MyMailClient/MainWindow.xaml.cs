@@ -43,7 +43,13 @@ namespace MyMailClient
             CurrentData.curKey = null;
             CurrentData.curLetter = null;
             CurrentData.curMail = null;
-            CurrentData.imap = null;
+            if (CurrentData.imap != null)
+            {
+                if (CurrentData.imap.IsConnected)
+                    CurrentData.imap.Disconnect(false);
+                CurrentData.imap.Dispose();
+                CurrentData.imap = null;
+            }
             CurrentData.smtp = null;
             Authorization az = new Authorization();
             az.Show();
@@ -290,5 +296,32 @@ namespace MyMailClient
             kmw.ShowDialog();
             this.Focus();
         }
+
+        private void btn_reply_Click(object sender, RoutedEventArgs e)
+        {
+            if (listOfLetters.SelectedItem == null)
+            {
+                Utility.MsgBox("Вам стоит выбрать письмо, что бы ответить на него!", "Уведомление", this);
+                return;
+            }
+            CurrentData.curLetter = (listOfLetters.SelectedItem as HelpMimeMessage).Msg;
+            if (CurrentData.curLetter == null)
+            {
+                Utility.MsgBox("Что-то пошло не так, письмо всёравно не выбранно!", "Уведомление", this);
+                return;
+            }
+            WriteLetterWindow wlw = new WriteLetterWindow(null,true);
+            if (wlw.ShowDialog().Value)
+                startSynchronization();
+            this.Focus();
+        }
+
+        private void btn_dellet_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+
+        
     }
 }

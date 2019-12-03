@@ -14,7 +14,7 @@
             <RowDefinition Height="34*"/>
             <RowDefinition Height="113*"/>
             <RowDefinition Height="358*"/>
-            <RowDefinition Height="35*"/>
+            <RowDefinition Height="55*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="25*"/>
@@ -49,14 +49,16 @@
         <materialDesign:Badged x:Name="CountingBadge" Grid.Column="0" Grid.Row="1" Badge="3" HorizontalAlignment="Center"  VerticalAlignment="Bottom">
             <ComboBox x:Name="listOfMails" Grid.Column="0" Grid.Row="1" materialDesign:HintAssist.Hint="Текущий почтовый ящик" Style="{StaticResource MaterialDesignFloatingHintComboBox}" HorizontalAlignment="Center"  VerticalAlignment="Center" Width="270" SelectionChanged="listOfMails_SelectionChanged"/>
         </materialDesign:Badged>
-        <Button Margin="0 15 0 0" Grid.Row="2" Content="Написать" HorizontalAlignment="Center" VerticalAlignment="Top"  Width="270" Click="Button_Click"/>
+        <Button Margin="0 0 500 0" Grid.Row="3" Grid.ColumnSpan="2" Content="Написать письмо" HorizontalAlignment="Center" VerticalAlignment="Center"  Width="200" Click="Button_Click"/>
+        <Button x:Name="btn_reply" Margin="0 0 0 0" Grid.Row="3" Grid.ColumnSpan="2" Content="Ответить на письмо" HorizontalAlignment="Center" VerticalAlignment="Center"  Width="200" Click="btn_reply_Click"/>
+        <Button x:Name="btn_dellet" Margin="500 0 0 0" Grid.Row="3" Grid.ColumnSpan="2" Content="Удалить письмо" HorizontalAlignment="Center" VerticalAlignment="Center"  Width="200" Click="btn_dellet_Click"/>
 
 
-        <TreeView x:Name="listOfFolders" Grid.Column="0" Grid.Row="2" BorderBrush="Blue" BorderThickness="1" HorizontalAlignment="Center" Height="310" VerticalAlignment="Bottom" Width="270" SelectedItemChanged="listOfFolders_SelectedItemChanged" Margin="0,0,0,0">
+        <TreeView x:Name="listOfFolders" Grid.Column="0" Grid.Row="2" BorderBrush="Blue" BorderThickness="1" HorizontalAlignment="Center" Height="340" VerticalAlignment="Bottom" Width="270" SelectedItemChanged="listOfFolders_SelectedItemChanged" Margin="0,0,0,0">
 
         </TreeView>
 
-        <Border Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" BorderBrush="Blue" BorderThickness="1" HorizontalAlignment="Center" Height="485" Width="850" VerticalAlignment="Bottom" Margin="0 0 0 0">
+        <Border Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" BorderBrush="Blue" BorderThickness="1" HorizontalAlignment="Center" Height="470" Width="850" VerticalAlignment="Bottom" Margin="0 0 0 0">
             <ListView ItemsSource="{Binding msg}" MouseDoubleClick="listOfLetters_MouseDoubleClick" x:Name="listOfLetters">
                 <ListView.View>
                     <GridView>

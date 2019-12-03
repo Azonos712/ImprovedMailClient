@@ -187,12 +187,5 @@ namespace MyMailClient
             if (sfd.ShowDialog(this).Value)
                 Utility.SaveAttachment(attachment, sfd.FileName);
         }
-
-        private void btn_reply_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-
     }
 }
