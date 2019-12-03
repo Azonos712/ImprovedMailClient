@@ -82,7 +82,7 @@ namespace MyMailClient
                 {
                     WriteLetterWindow wlw = new WriteLetterWindow(key.GetPublicCryptoKey());
 
-                    wlw.Show();
+                    wlw.ShowDialog();
                 }
                 else
                 {
