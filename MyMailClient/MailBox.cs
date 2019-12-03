@@ -303,6 +303,10 @@ namespace MyMailClient
                 {
                     var uid_flag = letterName.Split('_');
 
+                    if (fullfolderPath.Contains("[Gmail]"))
+                    {
+                        fullfolderPath=fullfolderPath.Replace('\\', '/');
+                    }
                     var serverFolder = CurrentData.imap.GetFolder(fullfolderPath);
                     
                     serverFolder.Open(FolderAccess.ReadWrite);
@@ -320,6 +324,44 @@ namespace MyMailClient
                     string newFullLetterPath = fullLetterPath.Substring(0, fullLetterPath.LastIndexOf("\\")+1) + newLetterName + ".eml";
                     File.Move(fullLetterPath, newFullLetterPath);
                 }
+            }
+            return true;
+        }
+
+        public bool delLetter(string fullLetterPath, string fullfolderPath)
+        {
+            try
+            {
+                string letterName = new FileInfo(fullLetterPath).Name;
+
+                if ((CurrentData.curMail.ImapConnection()))
+                {
+                    var uid_flag = letterName.Split('_');
+
+                    if (fullfolderPath.Contains("[Gmail]"))
+                    {
+                        fullfolderPath=fullfolderPath.Replace('\\', '/');
+                    }
+                    var serverFolder = CurrentData.imap.GetFolder(fullfolderPath);
+
+                    serverFolder.Open(FolderAccess.ReadWrite);
+                    List<UniqueId> uids = new List<UniqueId>();
+                    uids.Add(new UniqueId(Convert.ToUInt32(uid_flag[0])));
+                    var uid = serverFolder.Fetch(uids, MessageSummaryItems.UniqueId | MessageSummaryItems.Flags);
+                    serverFolder.AddFlags(uid[0].UniqueId, MessageFlags.Deleted, true);
+
+                    serverFolder.Expunge();
+                    serverFolder.Close();
+                    ImapDispose();
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
             }
             return true;
         }

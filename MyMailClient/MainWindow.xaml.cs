@@ -316,12 +316,37 @@ namespace MyMailClient
             this.Focus();
         }
 
-        private void btn_dellet_Click(object sender, RoutedEventArgs e)
+        private async void btn_dellet_Click(object sender, RoutedEventArgs e)
         {
+            if (listOfLetters.SelectedItem == null)
+            {
+                Utility.MsgBox("Вам стоит выбрать письмо, что бы удалить его!", "Уведомление", this);
+                return;
+            }
+            CurrentData.curLetter = (listOfLetters.SelectedItem as HelpMimeMessage).Msg;
+            if (CurrentData.curLetter == null)
+            {
+                Utility.MsgBox("Что-то пошло не так, письмо всёравно не выбранно!", "Уведомление", this);
+                return;
+            }
+            if (Utility.ShowConfirmation("Вы точно хотите удалить письмо?") == MessageBoxResult.Yes)
+            {
+                lockForm();
 
+                TreeViewItem item = listOfFolders.SelectedItem as TreeViewItem;
+                string fullfolderPath = Utility.strFromPanelWithIcon(item);
+                fullfolderPath = Utility.CutEndOfPathFolder(fullfolderPath);
+                for (var i = Utility.GetParentItem(item); i != null; i = Utility.GetParentItem(i))
+                    fullfolderPath = Utility.CutEndOfPathFolder(Utility.strFromPanelWithIcon(i)) + "\\" + fullfolderPath;
+                var tempPath = (listOfLetters.SelectedItem as HelpMimeMessage).FullPath;
+                var temp = await Task.Run(() => CurrentData.curMail.delLetter(tempPath, fullfolderPath));
+                //refreshListOfLetters();
+                unlockForm();
+                if (temp == true)
+                    startSynchronization();
+                else
+                    Utility.MsgBox("Что-то помешало удалению письма!", "Уведомление", this);
+            }
         }
-
-
-        
     }
 }
